@@ -1,0 +1,163 @@
+<?xml encoding="utf-8"?>
+
+<!ELEMENT project (Bridges,RoadLines,spans,components,configurations)>
+<!ATTLIST project
+    xmlns CDATA #FIXED ''
+    code NMTOKEN #REQUIRED
+    enName NMTOKEN #REQUIRED
+    name NMTOKEN #REQUIRED>
+
+<!ELEMENT Bridges (Bridge)>
+<!ATTLIST Bridges
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT RoadLines (RoadLine)>
+<!ATTLIST RoadLines
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT spans (span)+>
+<!ATTLIST spans
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT components (component)+>
+<!ATTLIST components
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT configurations (drawingCfg,sceneCfg,projectCfg,scale)>
+<!ATTLIST configurations
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT Bridge EMPTY>
+<!ATTLIST Bridge
+    xmlns CDATA #FIXED ''
+    code NMTOKEN #REQUIRED
+    enName CDATA #REQUIRED
+    id CDATA #REQUIRED
+    name NMTOKEN #REQUIRED>
+
+<!ELEMENT RoadLine (fileLocation)>
+<!ATTLIST RoadLine
+    xmlns CDATA #FIXED ''
+    code NMTOKEN #REQUIRED
+    enName NMTOKEN #REQUIRED
+    name NMTOKEN #REQUIRED>
+
+<!ELEMENT component (refSpanId,categoryId,properties)>
+<!ATTLIST component
+    xmlns CDATA #FIXED ''
+    code NMTOKEN #REQUIRED
+    enName CDATA #REQUIRED
+    id CDATA #REQUIRED
+    name CDATA #REQUIRED>
+
+<!ELEMENT drawingCfg (specific,fontSize,fontFamily)>
+<!ATTLIST drawingCfg
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT sceneCfg EMPTY>
+<!ATTLIST sceneCfg
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT projectCfg EMPTY>
+<!ATTLIST projectCfg
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT scale (#PCDATA)>
+<!ATTLIST scale
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT fileLocation EMPTY>
+<!ATTLIST fileLocation
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT refSpanId (#PCDATA)>
+<!ATTLIST refSpanId
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT categoryId (#PCDATA)>
+<!ATTLIST categoryId
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT properties (property)+>
+<!ATTLIST properties
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT specific (#PCDATA)>
+<!ATTLIST specific
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT fontSize (#PCDATA)>
+<!ATTLIST fontSize
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT fontFamily (#PCDATA)>
+<!ATTLIST fontFamily
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT span (#PCDATA|span|angle|azimuth|elevation|groundHeight|location|longitudinalSlope|number|refBridgeId|refLine|station)*>
+<!ATTLIST span
+    xmlns CDATA #FIXED ''
+    code NMTOKEN #IMPLIED
+    enName NMTOKEN #IMPLIED
+    id CDATA #IMPLIED
+    name NMTOKEN #IMPLIED>
+
+<!ELEMENT angle (#PCDATA)>
+<!ATTLIST angle
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT azimuth (#PCDATA)>
+<!ATTLIST azimuth
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT elevation (#PCDATA)>
+<!ATTLIST elevation
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT groundHeight (#PCDATA)>
+<!ATTLIST groundHeight
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT location (x,y,z)>
+<!ATTLIST location
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT longitudinalSlope (#PCDATA)>
+<!ATTLIST longitudinalSlope
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT number (#PCDATA)>
+<!ATTLIST number
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT refBridgeId (#PCDATA)>
+<!ATTLIST refBridgeId
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT refLine (#PCDATA)>
+<!ATTLIST refLine
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT station (#PCDATA)>
+<!ATTLIST station
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT x (#PCDATA)>
+<!ATTLIST x
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT y (#PCDATA)>
+<!ATTLIST y
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT z (#PCDATA)>
+<!ATTLIST z
+    xmlns CDATA #FIXED ''>
+
+<!ELEMENT property (property)?>
+<!ATTLIST property
+    xmlns CDATA #FIXED ''
+    key NMTOKEN #IMPLIED
+    name NMTOKEN #IMPLIED
+    type NMTOKEN #IMPLIED
+    value CDATA #IMPLIED>

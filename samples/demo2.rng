@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar ns="urn:oasis:names:tc:entity:xmlns:xml:catalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <start>
+        <element name="catalog">
+            <attribute name="xsi:schemaLocation"/>
+            <element name="project">
+                <attribute name="code">
+                    <data type="NCName"/>
+                </attribute>
+                <attribute name="enName">
+                    <data type="NCName"/>
+                </attribute>
+                <attribute name="name">
+                    <data type="NCName"/>
+                </attribute>
+                <element name="Bridges">
+                    <element name="Bridge">
+                        <attribute name="code">
+                            <data type="NCName"/>
+                        </attribute>
+                        <attribute name="enName"/>
+                        <attribute name="id">
+                            <data type="integer"/>
+                        </attribute>
+                        <attribute name="name">
+                            <data type="NCName"/>
+                        </attribute>
+                    </element>
+                </element>
+                <element name="RoadLines">
+                    <element name="RoadLine">
+                        <attribute name="code">
+                            <data type="NCName"/>
+                        </attribute>
+                        <attribute name="enName">
+                            <data type="NCName"/>
+                        </attribute>
+                        <attribute name="name">
+                            <data type="NCName"/>
+                        </attribute>
+                        <element name="fileLocation">
+                            <empty/>
+                        </element>
+                    </element>
+                </element>
+                <element name="spans">
+                    <oneOrMore>
+                        <ref name="span"/>
+                    </oneOrMore>
+                </element>
+                <element name="components">
+                    <oneOrMore>
+                        <element name="component">
+                            <attribute name="code">
+                                <data type="NCName"/>
+                            </attribute>
+                            <attribute name="enName"/>
+                            <attribute name="id">
+                                <data type="integer"/>
+                            </attribute>
+                            <attribute name="name"/>
+                            <element name="refSpanId">
+                                <data type="integer"/>
+                            </element>
+                            <element name="categoryId">
+                                <data type="NCName"/>
+                            </element>
+                            <element name="properties">
+                                <oneOrMore>
+                                    <ref name="property"/>
+                                </oneOrMore>
+                            </element>
+                        </element>
+                    </oneOrMore>
+                </element>
+                <element name="configurations">
+                    <element name="drawingCfg">
+                        <element name="specific">
+                            <data type="NCName"/>
+                        </element>
+                        <element name="fontSize">
+                            <data type="integer"/>
+                        </element>
+                        <element name="fontFamily">
+                            <data type="NCName"/>
+                        </element>
+                    </element>
+                    <element name="sceneCfg">
+                        <empty/>
+                    </element>
+                    <element name="projectCfg">
+                        <empty/>
+                    </element>
+                    <element name="scale">
+                        <data type="integer"/>
+                    </element>
+                </element>
+            </element>
+        </element>
+    </start>
+    <define name="span">
+        <element name="span">
+            <optional>
+                <attribute name="code">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="enName">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="id">
+                    <data type="integer"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="name">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <oneOrMore>
+                <choice>
+                    <text/>
+                    <ref name="span"/>
+                    <element name="angle">
+                        <data type="decimal"/>
+                    </element>
+                    <element name="azimuth">
+                        <data type="decimal"/>
+                    </element>
+                    <element name="elevation">
+                        <data type="decimal"/>
+                    </element>
+                    <element name="groundHeight">
+                        <data type="decimal"/>
+                    </element>
+                    <element name="location">
+                        <element name="x">
+                            <data type="decimal"/>
+                        </element>
+                        <element name="y">
+                            <data type="decimal"/>
+                        </element>
+                        <element name="z">
+                            <data type="decimal"/>
+                        </element>
+                    </element>
+                    <element name="longitudinalSlope">
+                        <data type="decimal"/>
+                    </element>
+                    <element name="number">
+                        <data type="integer"/>
+                    </element>
+                    <element name="refBridgeId">
+                        <data type="integer"/>
+                    </element>
+                    <element name="refLine">
+                        <data type="NCName"/>
+                    </element>
+                    <element name="station">
+                        <data type="decimal"/>
+                    </element>
+                </choice>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="property">
+        <element name="property">
+            <optional>
+                <attribute name="key">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="name">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="type">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="value">
+                    <data type="decimal"/>
+                </attribute>
+            </optional>
+            <optional>
+                <ref name="property"/>
+            </optional>
+        </element>
+    </define>
+</grammar>

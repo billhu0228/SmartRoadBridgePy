@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="project">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Bridges"/>
+                <xs:element ref="RoadLines"/>
+                <xs:element ref="spans"/>
+                <xs:element ref="components"/>
+                <xs:element ref="configurations"/>
+            </xs:sequence>
+            <xs:attribute name="code" use="required" type="xs:NCName"/>
+            <xs:attribute name="enName" use="required" type="xs:NCName"/>
+            <xs:attribute name="name" use="required" type="xs:NCName"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Bridges">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Bridge"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Bridge">
+        <xs:complexType>
+            <xs:attribute name="code" use="required" type="xs:NCName"/>
+            <xs:attribute name="enName" use="required"/>
+            <xs:attribute name="id" use="required" type="xs:integer"/>
+            <xs:attribute name="name" use="required" type="xs:NCName"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="RoadLines">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="RoadLine"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="RoadLine">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="fileLocation"/>
+            </xs:sequence>
+            <xs:attribute name="code" use="required" type="xs:NCName"/>
+            <xs:attribute name="enName" use="required" type="xs:NCName"/>
+            <xs:attribute name="name" use="required" type="xs:NCName"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="fileLocation">
+        <xs:complexType/>
+    </xs:element>
+    <xs:element name="spans">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="span"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="components">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="component"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="component">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="refSpanId"/>
+                <xs:element ref="categoryId"/>
+                <xs:element ref="properties"/>
+            </xs:sequence>
+            <xs:attribute name="code" use="required" type="xs:NCName"/>
+            <xs:attribute name="enName" use="required"/>
+            <xs:attribute name="id" use="required" type="xs:integer"/>
+            <xs:attribute name="name" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="refSpanId" type="xs:integer"/>
+    <xs:element name="categoryId" type="xs:NCName"/>
+    <xs:element name="properties">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="property"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="configurations">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="drawingCfg"/>
+                <xs:element ref="sceneCfg"/>
+                <xs:element ref="projectCfg"/>
+                <xs:element ref="scale"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="drawingCfg">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="specific"/>
+                <xs:element ref="fontSize"/>
+                <xs:element ref="fontFamily"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="specific" type="xs:NCName"/>
+    <xs:element name="fontSize" type="xs:integer"/>
+    <xs:element name="fontFamily" type="xs:NCName"/>
+    <xs:element name="sceneCfg">
+        <xs:complexType/>
+    </xs:element>
+    <xs:element name="projectCfg">
+        <xs:complexType/>
+    </xs:element>
+    <xs:element name="scale" type="xs:integer"/>
+    <xs:element name="span">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="span"/>
+                <xs:element ref="angle"/>
+                <xs:element ref="azimuth"/>
+                <xs:element ref="elevation"/>
+                <xs:element ref="groundHeight"/>
+                <xs:element ref="location"/>
+                <xs:element ref="longitudinalSlope"/>
+                <xs:element ref="number"/>
+                <xs:element ref="refBridgeId"/>
+                <xs:element ref="refLine"/>
+                <xs:element ref="station"/>
+            </xs:choice>
+            <xs:attribute name="code" type="xs:NCName"/>
+            <xs:attribute name="enName" type="xs:NCName"/>
+            <xs:attribute name="id" type="xs:integer"/>
+            <xs:attribute name="name" type="xs:NCName"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="angle" type="xs:decimal"/>
+    <xs:element name="azimuth" type="xs:decimal"/>
+    <xs:element name="elevation" type="xs:decimal"/>
+    <xs:element name="groundHeight" type="xs:decimal"/>
+    <xs:element name="location">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="x"/>
+                <xs:element ref="y"/>
+                <xs:element ref="z"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="x" type="xs:decimal"/>
+    <xs:element name="y" type="xs:decimal"/>
+    <xs:element name="z" type="xs:decimal"/>
+    <xs:element name="longitudinalSlope" type="xs:decimal"/>
+    <xs:element name="number" type="xs:integer"/>
+    <xs:element name="refBridgeId" type="xs:integer"/>
+    <xs:element name="refLine" type="xs:NCName"/>
+    <xs:element name="station" type="xs:decimal"/>
+    <xs:element name="property">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" ref="property"/>
+            </xs:sequence>
+            <xs:attribute name="key" type="xs:NCName"/>
+            <xs:attribute name="name" type="xs:NCName"/>
+            <xs:attribute name="type" type="xs:NCName"/>
+            <xs:attribute name="value" type="xs:decimal"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0"?>
+<LandXML xmlns="http://www.landxml.org/schema/LandXML-1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.landxml.org/schema/LandXML-1.2 http://www.landxml.org/schema/LandXML-1.2/LandXML-1.2.xsd" date="2020-07-18" time="02:58:09" version="1.2" language="English" readOnly="false">
+  <Units>
+    <Metric areaUnit="squareMeter" linearUnit="meter" volumeUnit="cubicMeter" temperatureUnit="celsius" pressureUnit="milliBars" diameterUnit="millimeter" angularUnit="decimal degrees" directionUnit="decimal degrees"/>
+  </Units>
+  <Project name="未命名"/>
+  <Application name="SMEDI-BDBIM" desc="桥梁智能化设计软件" manufacturer="SMEDI" version="2020" manufacturerURL="www.smedi.com" timeStamp="2019-02-17T16:32:06"/>
+  <Alignments>
+    <Alignment name="K9-C" length="568.669104" staStart="0" desc="K9-C">
+      <CoordGeom>
+        <Line dir="295.185075280836" length="4.28196329030644">
+          <Start>9855196.314127 258422.127726</Start>
+          <End>9855192.439216 258423.949888</End>
+        </Line>
+        <Spiral length="27.940015" radiusStart="INF" radiusEnd="300" rot="ccw" spiType="clothoid">
+          <Start>9855192.439216 258423.949888</Start>
+          <PI>9855175.58235521 258431.876761021</PI>
+          <End>9855167.3452806 258436.229447254</End>
+        </Spiral>
+        <Curve rot="ccw" crvType="arc" length="49.7763251370821">
+          <Start>9855167.345247 258436.229404</Start>
+          <Center>9855307.50733831 258701.47379727</Center>
+          <End>9855125.462157 258463.021387</End>
+          <PI>9855145.28980667 258447.884076898</PI>
+        </Curve>
+        <Spiral length="39.999999" radiusStart="300" radiusEnd="INF" rot="ccw" spiType="clothoid">
+          <Start>9855125.462157 258463.021387</Start>
+          <PI>9855114.85946108 258471.115956897</PI>
+          <End>9855094.78439531 258488.677630125</End>
+        </Spiral>
+        <Spiral length="40" radiusStart="INF" radiusEnd="400" rot="cw" spiType="clothoid">
+          <Start>9855094.784414 258488.677651</Start>
+          <PI>9855074.71141162 258506.237519352</PI>
+          <End>9855064.24703018 258514.506136633</End>
+        </Spiral>
+        <Curve rot="cw" crvType="arc" length="93.5537490157241">
+          <Start>9855064.247029 258514.506165</Start>
+          <Center>9854816.25513379 258200.659036747</Center>
+          <End>9854984.758534 258563.435282</End>
+          <PI>9855027.37683376 258543.639806098</PI>
+        </Curve>
+        <Spiral length="40" radiusStart="400" radiusEnd="INF" rot="cw" spiType="clothoid">
+          <Start>9854984.758534 258563.435282</Start>
+          <PI>9854972.66274358 258569.053571117</PI>
+          <End>9854947.94358153 258579.065500256</End>
+        </Spiral>
+        <Spiral length="40" radiusStart="INF" radiusEnd="300" rot="ccw" spiType="clothoid">
+          <Start>9854947.943574 258579.065481</Start>
+          <PI>9854923.22191789 258589.0784203</PI>
+          <End>9854911.21921844 258594.898594132</End>
+        </Spiral>
+        <Curve rot="ccw" crvType="arc" length="74.9634189452583">
+          <Start>9854911.219185 258594.898578</Start>
+          <Center>9855042.11367647 258864.836778524</Center>
+          <End>9854848.532543 258635.650512</End>
+          <PI>9854877.31678098 258611.338036829</PI>
+        </Curve>
+        <Spiral length="129.617191" radiusStart="300" radiusEnd="INF" rot="ccw" spiType="clothoid">
+          <Start>9854848.532543 258635.650512</Start>
+          <PI>9854815.37689606 258663.655277936</PI>
+          <End>9854762.72075013 258732.435768473</End>
+        </Spiral>
+        <Line dir="322.563485575741" length="28.5364419998718">
+          <Start>9854762.720985 258732.435945</Start>
+          <End>9854745.37419572 258755.094661289</End>
+        </Line>
+      </CoordGeom>
+      <Profile name="K9-C" state="proposed">
+        <ProfAlign name = "profAlign1" state = "proposed">
+          <PVI>0 1669.84365</PVI>
+          <PVI>82.9825 1669.84365</PVI>
+          <PVI>103.5434340461 1669.8688348324</PVI>
+          <PVI>111.646763034575 1669.86234451413</PVI>
+          <PVI>119.75009202305 1669.82302222551</PVI>
+          <PVI>127.853421011525 1669.75086796654</PVI>
+          <PVI>135.95675 1669.64588173722</PVI>
+          <PVI>144.060078988475 1669.50806353755</PVI>
+          <PVI>152.16340797695 1669.33741336754</PVI>
+          <PVI>160.266736965425 1669.13393122718</PVI>
+          <PVI>168.3700659539 1668.89761711647</PVI>
+          <PVI>354.085504087915 1663.1054444732</PVI>
+          <PVI>361.758578065936 1662.87349286293</PVI>
+          <PVI>369.431652043957 1662.65626026873</PVI>
+          <PVI>377.104726021979 1662.45374669061</PVI>
+          <PVI>384.7778 1662.26595212854</PVI>
+          <PVI>392.450873978021 1662.09287658255</PVI>
+          <PVI>400.123947956043 1661.93452005263</PVI>
+          <PVI>407.797021934064 1661.79088253877</PVI>
+          <PVI>415.470095912085 1661.66196404098</PVI>
+          <PVI>456.728946305803 1661.00832976264</PVI>
+          <PVI>472.286358152902 1660.75178017034</PVI>
+          <PVI>487.84377 1660.4750611561</PVI>
+          <PVI>503.401181847098 1660.17817271991</PVI>
+          <PVI>518.958593694197 1659.86111486178</PVI>
+          <PVI>569.13505497 1658.806</PVI>
+          <PVI>1669 1658.806</PVI>
+        </ProfAlign>
+      </Profile>
+    </Alignment>
+  </Alignments>
+  <Roadways>
+    <Roadway name="ROAD:K9-C" alignmentRefs="K9-C" staStart="0" staEnd="568.669104"/>
+  </Roadways>
+</LandXML>
