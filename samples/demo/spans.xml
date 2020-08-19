@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<spans>
+	<span
+		id='1'
+		name='S1'
+		enName='S1'
+		code='p.18163-br.sxb-s1'>
+		<refBridgeId>1</refBridgeId>
+		<number>2</number>
+		<station>323.22</station>
+		<angle>12.32</angle>
+		<elevation>100.00</elevation>
+		<groundHeight>0.00</groundHeight>
+		<azimuth>12.33</azimuth>
+		<refLine>l001</refLine>
+		<longitudinalSlope>1.0</longitudinalSlope>
+		<span>30</span>
+		<location>
+			<x>12.335564</x>
+			<y>25.365842</y>
+			<z>25.365842</z>
+		</location>
+	</span>
+	<span
+		id='2'
+		name='S2'
+		enName='S2'
+		code='p.18163-br.sxb-s2'>
+		<refBridgeId>1</refBridgeId>
+		<number>2</number>
+		<station>323.22</station>
+		<angle>12.32</angle>
+		<elevation>100.00</elevation>
+		<groundHeight>0.00</groundHeight>
+		<azimuth>12.33</azimuth>
+		<refLine>l001</refLine>
+		<longitudinalSlope>1.0</longitudinalSlope>
+		<span>30</span>
+		<location>
+			<x>12.335564</x>
+			<y>25.365842</y>
+			<z>25.365842</z>
+		</location>
+	</span>
+</spans>

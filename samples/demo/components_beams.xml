@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components>
+	<component
+		id=1
+		name='0#盖梁'
+		enName='0# GL'
+		code='p.18163-br.sxb-s1-gl.0001'>
+		<refSpans>
+			<spanId>1</spanId>
+			<spanId>2</spanId>
+		</refSpans>
+		<locations>
+			<location>
+				<point x=1.22 y=2.33  z=12.33/>
+			</location>
+			<location>
+				<point x=1.22 y=2.33  z=12.33/>
+			</location>
+		</locations>
+		<definitionId>bridge.sxb.pier.001</definitionId>
+		<properties>
+			<property>
+				<property name='左侧桥宽' key='leftWidth' value='12.55' type='double' />
+				<property name='右侧桥宽' key='rightWidth' value='12.55' type='double' />
+				<property name='左侧横坡' key='leftSlop' value='12.55' type='double' />
+				<property name='右侧横坡' key='rightSlop' value='12.55' type='double' />
+				<property name='梁部连接' key='beamLink' value='12.55' type='double' />
+				<property name='梁部总高' key='totalHeight' value='12.55' type='double' />
+				<property name='顶部标高' key='topHeight' value='12.55' type='double' />
+			</property>
+		</properties>
+	</component>
+	<component
+		id=2
+		name='1#盖梁'
+		enName='1# GL'
+		code='p.18163-br.sxb-s1-gl.0002'>
+		<refSpans>
+			<spanId>2</spanId>
+			<spanId>3</spanId>
+		</refSpans>
+		<locations>
+			<location>
+				<point x=1.22 y=2.33  z=12.33/>
+			</location>
+			<location>
+				<point x=1.22 y=2.33  z=12.33/>
+			</location>
+		</locations>
+		<definitionId>bridge.sxb.pier.001</definitionId>
+		<properties>
+			<property>
+				<property name='左侧桥宽' key='leftWidth' value='12.55' type='double' />
+				<property name='右侧桥宽' key='rightWidth' value='12.55' type='double' />
+				<property name='左侧横坡' key='leftSlop' value='12.55' type='double' />
+				<property name='右侧横坡' key='rightSlop' value='12.55' type='double' />
+				<property name='梁部连接' key='beamLink' value='12.55' type='double' />
+				<property name='梁部总高' key='totalHeight' value='12.55' type='double' />
+				<property name='顶部标高' key='topHeight' value='12.55' type='double' />
+			</property>
+		</properties>
+	</component>
+</components>

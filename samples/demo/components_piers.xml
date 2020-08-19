@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE project SYSTEM "file:///D:/BIM_repo/%E6%99%BA%E8%83%BD%E8%AE%BE%E8%AE%A1/smartRoadBridge/demo2.dtd">
+<project
+	id=1
+	name='项目001'
+	enName='project001'
+	code='p.18163'>
+	<components>
+		<component
+			id=1
+			name='0#盖梁'
+			enName='0# GL'
+			code='p.18163-br.sxb-s1-gl.0001'>
+			<refSpans>
+				<spanId>1</spanId>
+				<spanId>1</spanId>
+			</refSpans>
+			<locations>
+				<location>
+					<point x=1.22 y=2.33  z=12.33/>
+				</location>
+				<location>
+					<point x=1.22 y=2.33  z=12.33/>
+				</location>
+			</locations>
+			<definitionId>bridge.sxb.pier.001</definitionId>
+			<properties>
+				<property>
+					<property name='左侧桥宽' key='leftWidth' value='12.55' type='double' />
+					<property name='右侧桥宽' key='rightWidth' value='12.55' type='double' />
+					<property name='左侧横坡' key='leftSlop' value='12.55' type='double' />
+					<property name='右侧横坡' key='rightSlop' value='12.55' type='double' />
+					<property name='梁部连接' key='beamLink' value='12.55' type='double' />
+					<property name='梁部总高' key='totalHeight' value='12.55' type='double' />
+					<property name='顶部标高' key='topHeight' value='12.55' type='double' />
+				</property>
+			</properties>
+		</component>
+		<component
+			id=1
+			name='0#盖梁'
+			enName='0# GL'
+			code='p.18163-br.sxb-s1-gl.0001'>
+			<refSpans>
+				<spanId>1</spanId>
+				<spanId>1</spanId>
+			</refSpans>
+			<locations>
+				<location>
+					<point x=1.22 y=2.33  z=12.33/>
+				</location>
+				<location>
+					<point x=1.22 y=2.33  z=12.33/>
+				</location>
+			</locations>
+			<definitionId>bridge.sxb.pier.001</definitionId>
+			<properties>
+				<property>
+					<property name='左侧桥宽' key='leftWidth' value='12.55' type='double' />
+					<property name='右侧桥宽' key='rightWidth' value='12.55' type='double' />
+					<property name='左侧横坡' key='leftSlop' value='12.55' type='double' />
+					<property name='右侧横坡' key='rightSlop' value='12.55' type='double' />
+					<property name='梁部连接' key='beamLink' value='12.55' type='double' />
+					<property name='梁部总高' key='totalHeight' value='12.55' type='double' />
+					<property name='顶部标高' key='topHeight' value='12.55' type='double' />
+				</property>
+			</properties>
+		</component>
+	</components>
+</project>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project
+	id=1
+	name='项目001'
+	enName='project001'
+	code='p.18163'>
+	<Bridges>
+		<Bridge
+			id='1'
+			name='沙溪大桥'
+			enName='shaxi bridge'
+			code='br.sxb'>
+
+		</Bridge>
+	</Bridges>
+	<RoadLines>
+		<RoadLine
+			id=1
+			name='路线001'
+			enName='line001'
+			code='l001'>
+			<fileLocation>./resources/roads/M1K-0312</fileLocation>
+		</RoadLine>
+	</RoadLines>
+	<configurations>
+		<drawingCfg>
+			<specific>A1</specific>
+			<fontSize>12</fontSize>
+			<fontFamily>宋体</fontFamily>
+		</drawingCfg>
+		<sceneCfg>
+
+		</sceneCfg>
+		<projectCfg>
+
+		</projectCfg>
+		<scale>1000</scale>
+	</configurations>
+	<include>./spans.xml</include>
+	<include>./components_ancillary.xml</include>
+	<include>./components_pires.xml</include>
+	<include>./components_funds.xml</include>
+	<include>./components_beams.xml</include>
+</project>

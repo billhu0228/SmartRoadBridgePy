@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components>
+	<component
+		id=1
+		name='护栏'
+		enName='ancillary'
+		code='p.18163-br.sxb-ancillary'>
+		<refSpans>
+			<spanId>1</spanId>
+			<spanId>1</spanId>
+		</refSpans>
+		<locations>
+			<location>
+				<point x=1.22 y=2.33  z=12.33/>
+			</location>
+			<location>
+				<point x=1.22 y=2.33  z=12.33/>
+			</location>
+		</locations>
+		<definitionId>bridge.sxb.ancillary.001</definitionId>
+		
+	</component>
+</components>
