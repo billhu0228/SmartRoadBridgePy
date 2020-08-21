@@ -1,9 +1,8 @@
-from src.srbpy.alignment import Align
+from srbpy.alignment import Align
 
 try:
     M1 = Align(path="00-MainLine/M1K-0312")
     l= M1.get_ground_elevation(17315)
-
     print(l)
 except Exception as e:
     print(e)
