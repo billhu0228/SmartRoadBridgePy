@@ -6,11 +6,11 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='srbpy',  # Required
-    version='0.0.1',  # Required
+    version='0.0.4',  # Required
     description='A road design Python project',  # Optional
     long_description=long_description,  # Optional
     long_description_content_type='text/markdown',  # Optional (see note above)
-    url='https://github.com/billhu0228/SmartRoadBridgePyt',  # Optional
+    url='https://github.com/billhu0228/SmartRoadBridgePy',  # Optional
     author='bill hu',  # Optional
     author_email='billhu0228@icloud.com',  # Optional
 
@@ -19,10 +19,7 @@ setup(
     # For a list of valid classifiers, see https://pypi.org/classifiers/
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'Intended Audience :: Engineer',
-        'Topic :: Road and Bridge :: Alignment',
         'License :: OSI Approved :: MIT License',
-
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate you support Python 3. These classifiers are *not*
         # checked by 'pip install'. See instead 'python_requires' below.
@@ -44,7 +41,7 @@ setup(
 
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    # package_dir={'': '.'},  # Optional
+    package_dir={'': 'src'},
 
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
@@ -55,7 +52,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(where='./'),  # Required
+    packages=find_packages(where="src"),  # Required
     python_requires='>=3.5, <4',
 
     # This field lists other packages that your project depends on to run.

@@ -2,7 +2,7 @@ import abc
 from enum import Enum
 import numpy as np
 from skspatial.objects import Point
-from srbpy.alignment.ext import *
+from .ext import *
 
 
 class LeftRightEnum(Enum):

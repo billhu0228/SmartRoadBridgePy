@@ -1,4 +1,4 @@
-from srbpy.alignment import Align
+from src.srbpy.alignment import Align
 
 try:
     M1 = Align(path="00-MainLine/M1K-0312")
