@@ -1,6 +1,10 @@
 import numpy as np
 import os
+
+from .cg import CG
+from .dmx import DMX
 from .pqx import PQX
+from .sqx import SQX
 
 
 class Align(object):
@@ -8,6 +12,7 @@ class Align(object):
     _work_dir = ""
     _pqx = None
     _sqx = None
+    __dmx = None
     _cg = None
     _hdx = None
 
@@ -16,6 +21,9 @@ class Align(object):
             self.name = name if name != "" else os.path.basename(path)
             self._work_dir = path
             self._pqx = PQX(os.path.join(path, self.name + ".ICD"))
+            self._sqx = SQX(os.path.join(path, self.name + ".SQX"))
+            self.__dmx = DMX(os.path.join(path, self.name + ".DMX"))
+            self._cg = CG(os.path.join(path, self.name + ".CG"))
         else:
             raise FileNotFoundError("路线数据文件错误或未找到.")
 
@@ -89,6 +97,61 @@ class Align(object):
         """
         return self._pqx.get_side(x0, y0)
 
+    def get_elevation(self, pk: float) -> float:
+        """
+        获取任意点标高
+        Parameters
+        ----------
+        pk : float
+            里程
 
-class AlignCollection(object):
-    pass
+        Returns
+        -------
+        out : float
+            标高
+        """
+        return self._sqx.get_bg(pk)
+
+    def get_ground_elevation(self, pk: float) -> float:
+        """
+        获取任意里程处地面标高
+        Parameters
+        ----------
+        pk : float
+            里程
+
+        Returns
+        -------
+        out : float
+            地面标高
+        """
+        return self.__dmx.get_bg(pk)
+
+    def get_slope(self, pk: float) -> float:
+        """
+        获取纵坡
+        Parameters
+        ----------
+        pk : float
+            桩号
+        Returns
+        -------
+        out : float
+            纵坡
+        """
+        return self._sqx.get_zp(pk)
+
+    def get_cross_slope(self, pk: float):
+        """
+        获取横坡值
+        Parameters
+        ----------
+        pk : float
+            里程
+
+        Returns
+        -------
+        out :
+            左横坡,右横坡
+        """
+        return self._cg.get_hp(pk)

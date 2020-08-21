@@ -1,4 +1,4 @@
-![logo](doc/cccc.png)
+![logo](docs/cccc.png)
 
 ---
 
