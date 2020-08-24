@@ -11,13 +11,13 @@
 		</refSpans>
 		<locations>
 			<location>
-				<point x=1.22 y=2.33  z=12.33/>
+				<point x=1.22 y=2.33  z=12.33 />
 			</location>
 			<location>
-				<point x=1.22 y=2.33  z=12.33/>
+				<point x=1.22 y=2.33  z=12.33 />
 			</location>
 		</locations>
-		<definitionId>bridge.sxb.pier.001</definitionId>
+		<definitionId>beam-20200801</definitionId>
 		<properties>
 			<property>
 				<property name='左侧桥宽' key='leftWidth' value='12.55' type='double' />
@@ -47,7 +47,7 @@
 				<point x=1.22 y=2.33  z=12.33/>
 			</location>
 		</locations>
-		<definitionId>bridge.sxb.pier.001</definitionId>
+		<definitionId>beam-20200801</definitionId>
 		<properties>
 			<property>
 				<property name='左侧桥宽' key='leftWidth' value='12.55' type='double' />

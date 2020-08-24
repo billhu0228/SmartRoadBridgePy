@@ -15,13 +15,13 @@
 				<linked>true</linked>
 				<enName>category</enName>
 				<type>reference</type>
-				<constaints>
+				<constraints>
 					<required>true</required>
 					<references>
 						<option key='base' value='base' label='圆柱形桩基'/>
 						<option key='quare' value='quare' label='方形桩基'/>
 					</references>
-				</constaints>
+				</constraints>
 				<defaultValue>10</defaultValue>
 			</property>
 			<property>
@@ -29,14 +29,14 @@
 				<name>宽度</name>
 				<enName>width</enName>
 				<type>double</type>
-				<constaints>
+				<constraints>
 					<precision>2</precision>
 					<required>true</required>
 					<min>0</min>
 					<max>1000</max>
 					<references></references>
 					<regExp></regExp>
-				</constaints>
+				</constraints>
 				<defaultValue>10</defaultValue>
 				<refGroups>
 					<groupName>quare</groupName>
@@ -47,12 +47,12 @@
 				<name>高度</name>
 				<enName>height</enName>
 				<type>double</type>
-				<constaints>
+				<constraints>
 					<precision>2</precision>
 					<required>true</required>
 					<min>0</min>
 					<max>1000</max>
-				</constaints>
+				</constraints>
 				<defaultValue>10</defaultValue>
 				<refGroups>
 					<groupName>quare</groupName>
@@ -63,12 +63,12 @@
 				<name>桩径</name>
 				<enName>radiu</enName>
 				<type>double</type>
-				<constaints>
+				<constraints>
 					<precision>2</precision>
 					<required>true</required>
 					<min>0</min>
 					<max>1000</max>
-				</constaints>
+				</constraints>
 				<defaultValue>10</defaultValue>
 				<refGroups>
 					<groupName>base</groupName>
@@ -81,20 +81,109 @@
 				<name>里程桩号</name>
 				<enName>station</enName>
 				<type>text</type>
-				<constaints>
+				<constraints>
 					<required>true</required>
 					<regExp>\/w+\</regExp>
-				</constaints>
+				</constraints>
 			</property>
 			<property>
 				<key>title</key>
 				<name>标题</name>
 				<enName>title</enName>
 				<type>text</type>
-				<constaints>
+				<constraints>
 					<required>true</required>
-				</constaints>
+				</constraints>
 			</property>
+		</properties>
+	</definition>
+	<definition>
+		<code>beam-20200801</code>
+		<type>brg.pier.beam</type>
+		<version>0.0.1</version>
+		<author>enzo</author>
+		<createDate>2020-08-18 12:00:00</createDate>
+		<templateCategory>cadBlock</templateCategory>
+		<templateResPath>./resources/cadBlocks/beam-20200801.dwg</templateResPath>
+		<properties name='自定义属性' key='customProps'>
+			<property>
+					<name>左侧桥宽</name>
+					<key>leftWidth</key>
+					<value>12.55</value>
+					<type>double</type>
+					<constraints>
+						<required>true</required>
+						<min>0</min>
+						<precision>2</precision>
+						<max>100</max>
+					</constraints>
+				</property>
+				<property>
+					<name>右侧桥宽</name>
+					<key>rightWidth</key>
+					<value>12.55</value>
+					<type>double</type>
+					<constraints>
+						<required>true</required>
+						<min>0</min>
+						<precision>2</precision>
+						<max>100</max>
+					</constraints>
+				</property>
+				<property>
+					<name>左侧横坡</name>
+					<key>leftSlop</key>
+					<value>12.55</value>
+					<type>double</type>
+					<constraints>
+						<required>true</required>
+						<min>0</min>
+						<precision>2</precision>
+						<max>100</max>
+					</constraints>
+				</property>
+				<property>
+					<name>右侧横坡</name>
+					<key>rightSlop</key>
+					<value>12.55</value>
+					<type>double</type>
+					<constraints>
+						<required>true</required>
+						<min>0</min>
+						<precision>2</precision>
+						<max>100</max>
+					</constraints>
+				</property>
+				<property>
+					<name>梁部连接</name>
+					<key>beamLink</key>
+					<value>12.55</value>
+					<type>double</type>
+				</property>
+				<property>
+					<name>梁部总高</name>
+					<key>totalHeight</key>
+					<value>12.55</value>
+					<type>double</type>
+					<constraints>
+						<required>true</required>
+						<min>0</min>
+						<precision>2</precision>
+						<max>100</max>
+					</constraints>
+				</property>
+				<property>
+					<name>顶部标高</name>
+					<key>topHeight</key>
+					<value>12.55</value>
+					<type>double</type>
+					<constraints>
+						<required>true</required>
+						<min>0</min>
+						<precision>2</precision>
+						<max>100</max>
+					</constraints>
+				</property>
 		</properties>
 	</definition>
 </definitions>
