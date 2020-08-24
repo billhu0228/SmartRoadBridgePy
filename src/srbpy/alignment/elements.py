@@ -16,7 +16,7 @@ class Align(object):
     _cg = None
     _hdx = None
 
-    def __init__(self, name="", path=""):
+    def __init__(self, path, name=""):
         if os.path.exists(path) and os.path.isdir(path):
             self.name = name if name != "" else os.path.basename(path)
             self._work_dir = path

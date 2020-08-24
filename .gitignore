@@ -132,3 +132,4 @@ dmypy.json
 .svn/  
 .idea
 /src/Test/*
+/docs/srbpy-doc/*
