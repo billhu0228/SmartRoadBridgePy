@@ -1,6 +1,6 @@
 import copy
 
-from .base import CGD
+from .__base import CGD
 import re
 import numpy as np
 
