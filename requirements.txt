@@ -1,0 +1,2 @@
+numpy
+PyAngle>=2.2.0
