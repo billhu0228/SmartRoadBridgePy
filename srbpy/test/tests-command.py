@@ -1,4 +1,4 @@
-from srbpy import Model
+from srbpy.model import Model
 from srbpy.stdlib import std_Piers, std_Beams, std_Foundations, std_Abutments  # 导入自带标准结构库
 from srbpy.stdlib import std_Joint, std_Bearing  # 导入支座伸缩缝
 # ---------------------------------------------------------------

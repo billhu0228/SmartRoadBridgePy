@@ -1,107 +1,40 @@
 """
-NumPy
+SrbPy
 =====
 
-Provides
-  1. An array object of arbitrary homogeneous items
-  2. Fast mathematical operations over arrays
-  3. Linear Algebra, Fourier Transforms, Random Number Generation
+提供了两个子模块：
+  1. 路线模块（srbpy.alignment），用于解析EICAD路线数据包并解析.
+  2. 模型（srbpy.model），用于建模。
 
-How to use the documentation
+路线模块
 ----------------------------
-Documentation is available in two forms: docstrings provided
-with the code, and a loose standing reference guide, available from
-`the NumPy homepage <https://www.scipy.org>`_.
+首先导入路线对象
 
-We recommend exploring the docstrings using
-`IPython <https://ipython.org>`_, an advanced Python shell with
-TAB-completion and introspection capabilities.  See below for further
-instructions.
+  >>> from srbpy.alignment import Align
+  >>> m1k = Align(path ="xxx", name="m1k")
 
-The docstring examples assume that `numpy` has been imported as `np`::
+Align 类提供了若干支持路线查询的基本函数，例如通过里程桩号pk，获取中桩大地坐标、设计高程、地面高程、纵横坡等数据：
 
-  >>> import numpy as np
+  >>> x,y = m1k.get_coordinate(pk=16000)
+  >>> design_level = m1k.get_elevation(16000)
+  >>> ground_level = m1k.get_ground_elevation(16000)
+  >>> print(x, y)
+  >>> 472736.5636194062 9854283.750879934
 
-Code snippets are indicated by three greater-than signs::
+Align 类还支持根据坐标反查最近的正交桩号（可能有多解）：
 
-  >>> x = 42
-  >>> x = x + 1
+  >>> pk = m1k.get_station_by_point(x0=472736.5636194062, y0=9854283.750879934)
+  >>> print(pk)
+  >>> 16000.000000000384
 
-Use the built-in ``help`` function to view a function's docstring::
 
-  >>> help(np.sort)
-  ... # doctest: +SKIP
-
-For some objects, ``np.info(obj)`` may provide additional help.  This is
-particularly true if you see the line "Help on ufunc object:" at the top
-of the help() page.  Ufuncs are implemented in C, not Python, for speed.
-The native Python help() does not know how to view their help, but our
-np.info() function does.
-
-To search for documents containing a keyword, do::
-
-  >>> np.lookfor('keyword')
-  ... # doctest: +SKIP
-
-General-purpose documents like a glossary and help on the basic concepts
-of numpy are available under the ``doc`` sub-module::
-
-  >>> from numpy import doc
-  >>> help(doc)
-  ... # doctest: +SKIP
-
-Available subpackages
+模型模块
 ---------------------
-doc
-    Topical documentation on broadcasting, indexing, etc.
-lib
-    Basic functions used by several sub-packages.
-random
-    Core Random Tools
-linalg
-    Core Linear Algebra Tools
-fft
-    Core FFT routines
-polynomial
-    Polynomial tools
-testing
-    NumPy testing tools
-f2py
-    Fortran to Python Interface Generator.
-distutils
-    Enhancements to distutils with support for
-    Fortran compilers support and more.
+开发中..
 
-Utilities
+标准库
 ---------
-test
-    Run numpy unittests
-show_config
-    Show numpy build configuration
-dual
-    Overwrite certain functions with high-performance Scipy tools
-matlib
-    Make everything matrices.
-__version__
-    NumPy version string
+开发中..
 
-Viewing documentation using IPython
------------------------------------
-Start IPython with the NumPy profile (``ipython -p numpy``), which will
-import `numpy` under the alias `np`.  Then, use the ``cpaste`` command to
-paste examples into the shell.  To see which functions are available in
-`numpy`, type ``np.<TAB>`` (where ``<TAB>`` refers to the TAB key), or use
-``np.*cos*?<ENTER>`` (where ``<ENTER>`` refers to the ENTER key) to narrow
-down the list.  To view the docstring for a function, use
-``np.cos?<ENTER>`` (to view the docstring) and ``np.cos??<ENTER>`` (to view
-the source code).
-
-Copies vs. in-place operation
------------------------------
-Most of the functions in `numpy` return a copy of the array argument
-(e.g., `np.sort`).  In-place versions of these functions are often
-available as array methods, i.e. ``x = np.array([1,2,3]); x.sort()``.
-Exceptions to this rule are documented.
 
 """
-
