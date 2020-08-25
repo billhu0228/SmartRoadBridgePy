@@ -1,10 +1,8 @@
-import numpy as np
 import os
-
-from .__cg import CG
-from .__dmx import DMX
-from .__pqx import PQX
-from .__sqx import SQX
+from srbpy.alignment.align_cg import CG
+from srbpy.alignment.align_dmx import DMX
+from srbpy.alignment.align_pqx import PQX
+from srbpy.alignment.align_sqx import SQX
 
 
 class Align(object):

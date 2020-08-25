@@ -104,4 +104,4 @@ available as array methods, i.e. ``x = np.array([1,2,3]); x.sort()``.
 Exceptions to this rule are documented.
 
 """
-from .model import Model
+

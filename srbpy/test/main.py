@@ -1,4 +1,5 @@
-from srbpy.alignment import  Align
+from srbpy.alignment.align import  Align
+
 
 M1 = Align(path="00-MainLine/M1K-0312")
 l = M1.get_ground_elevation(17315)

@@ -1,4 +1,4 @@
-from ..alignment import Align
+from srbpy.alignment.align import Align
 
 
 class Model(object):
