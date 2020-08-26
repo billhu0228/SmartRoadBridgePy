@@ -132,3 +132,5 @@ dmypy.json
 .svn/  
 .idea
 /docs/srbpy-doc/build/*
+/srbpy/test/test-queue.py
+/srbpy/test/bin/

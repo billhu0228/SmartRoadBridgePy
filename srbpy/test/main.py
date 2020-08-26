@@ -1,9 +1,12 @@
 from srbpy.alignment import Align
 
 m1k = Align(path="00-MainLine/M1K-0312")
+m1k.set_width(dxf_path="00-MainLine/主线边线.dxf")
 l = m1k.get_ground_elevation(16000)
 l2 = m1k.get_elevation(16000)
 x, y = m1k.get_coordinate(16000)
+
+lw,rw=m1k.get_width(16000)
 
 print(x, y)
 print(l, l2)
