@@ -1,3 +1,4 @@
+import json
 import os
 
 from PyAngle import Angle
@@ -274,14 +275,12 @@ class Align(object):
         else:
             pkl = self.binary_search(
                 range=[max(self.start_pk, pk - 100), min(self.end_pk, pk + 100)],
-                evaluate=self._better,
                 precision=1e-10,
                 center=pk,
                 tar_ang=angle
             )
             pkr = self.binary_search(
                 range=[max(self.start_pk, pk - 100), min(self.end_pk, pk + 100)],
-                evaluate=self._better,
                 precision=1.0e-10,
                 center=pk,
                 tar_ang=angle + pi
@@ -333,9 +332,35 @@ class Align(object):
         else:
             return None
 
-    def binary_search(self, range, evaluate, precision, **kwargs):
+    def binary_search(self, range, precision, **kwargs):
         st = range[0]
         ed = range[-1]
         while abs(ed - st) > precision:
-            st, ed = evaluate(st, ed, **kwargs)
+            st, ed = self._better(st, ed, center=kwargs["center"], tar_ang=kwargs["tar_ang"])
         return (st + ed) * 0.5
+
+    def serialize(self, step: float = 100):
+        """
+        路线对象序列化。
+
+        Args:
+            step (float) : 步长，默认100m
+
+        Returns:
+
+        """
+        listPt = []
+        pk = self.start_pk
+        while pk < self.end_pk:
+            x, y = self.get_coordinate(pk)
+            z = self.get_elevation(pk)
+            z0 = self.get_ground_elevation(pk)
+            pos = {"PK": pk, "X": x, "Y": y, "Z": z, "Z0": z0}
+            listPt.append(pos)
+            pk += step
+        dict = {
+            "Position": listPt,
+            "Width": [self._left_w, self._right_w],
+            "Width_dxf": self._width_dxf,
+        }
+        return json.dumps(dict)

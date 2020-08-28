@@ -27,7 +27,7 @@ class SQX(object):
     def __get_ab(self, k: int):
         cur_bpd = self.__BPDList[k]
         if k == 0:
-            i2 = (self.__BPDList[k + 1].elevation - cur_bpd.h) / (self.__BPDList[k + 1].pk - cur_bpd.pk)
+            i2 = (self.__BPDList[k + 1].elevation - cur_bpd.elevation) / (self.__BPDList[k + 1].pk - cur_bpd.pk)
             i1 = -i2
         elif k == len(self.__BPDList) - 1:
             i1 = (cur_bpd.elevation - self.__BPDList[k - 1].elevation) / (cur_bpd.pk - self.__BPDList[k - 1].pk)

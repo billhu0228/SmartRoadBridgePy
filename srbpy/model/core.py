@@ -1,3 +1,4 @@
+import json
 import os
 import zipfile
 
@@ -11,10 +12,13 @@ class Bridge(object):
     def __init__(self, name: str):
         self.name = name
 
+    def serialize(self):
+        return json.dumps({"name": self.name})
+
 
 class Span(object):
 
-    def __init__(self, align: Align, bridge: Bridge, station: float, angle: float = 0.5 * pi):
+    def __init__(self, align: Align, bridge: Bridge, station: float, ang_deg: float = 90):
         """
         跨径线对象
 
@@ -22,17 +26,17 @@ class Span(object):
             align (Align): 跨径线对应路线
             bridge (Bridge): 跨径线对应桥梁
             station (float): 跨径线桩号
-            angle (float): 斜交角, 正交时为0.5*pi, 逆时针为正, 默认值为0.5*pi.
+            ang_deg (float): 斜交角, 正交时为90, 逆时针为正, 默认值为90.
 
         """
         self.align = align
         self.bridge = bridge
         self.station = station
-        self.angle = angle
+        self.angle = Angle.from_degrees(ang_deg).to_rad()
         self.elevation = align.get_elevation(station)
         self.ground_elevation = align.get_ground_elevation(station)
-        self.width_left, self.width_right = align.get_width(station, angle)
-        self.hp_left,self.hp_right=align.get_cross_slope(station,angle)
+        self.width_left, self.width_right = align.get_width(station, self.angle)
+        self.hp_left, self.hp_right = align.get_cross_slope(station, self.angle)
 
         self.pier = None
         self.foundation = None
@@ -55,7 +59,7 @@ class Span(object):
             raise Exception("无法与非Span类进行比较.")
 
     def __add__(self, dist: float):
-        return Span(self.align,self.bridge, self.station + dist, self.angle)
+        return Span(self.align, self.bridge, self.station + dist, self.angle)
 
     def __sub__(self, other) -> float:
         if isinstance(other, Span):
@@ -65,6 +69,21 @@ class Span(object):
                 print("警告：桩号不在同一条设计线")
                 return self.station - other.station
         raise Exception("无法与其他类型相减.")
+
+    def serialize(self):
+        dict = {
+            "align": self.align.name,
+            "bridge": self.bridge.name,
+            "station": self.station,
+            "angle": self.angle,
+            "elevation": self.elevation,
+            "ground_elevation": self.ground_elevation,
+            "width_left": self.width_left,
+            "width_right": self.width_right,
+            "hp_left": self.hp_left,
+            "hp_right": self.hp_right,
+        }
+        return json.dumps(dict)
 
 
 class SpanCollection(list):
@@ -108,25 +127,50 @@ class Model(object):
         self.bridges = {}
         self.spans = SpanCollection(self.alignments, self.bridges)
 
-    def load_align(self, path: str, name: str = ""):
+    def add_align(self, alignment: Align) -> int:
         """
         导入路线数据。
 
         Args:
-            path: 路线数据包
-            name:  optional, 路线名称，如为空则使用数据表文件
+            alignment: 路线对象
 
         Returns:
-            Align: 路线实例
+            int: 成功时返回 0，失败返回 -1
         """
 
-        a1 = Align(path, name)
-        self.alignments[a1.name] = a1
-        return a1
+        try:
+            self.alignments[alignment.name] = alignment
+            return 0
+        except Exception as e:
+            print(e)
+            return -1
 
-    def load_bridge(self, obj: Bridge):
-        if not obj.name in self.bridges.keys():
-            self.bridges[obj.name] = obj
+    def add_bridge(self, bri: Bridge) -> int:
+        """
+        导入桥梁数据。
+
+        Args:
+            bri (Bridge): 桥梁对象
+
+        Returns:
+            int : 成功时返回 0，失败返回 -1
+
+        """
+        try:
+            self.bridges[bri.name] = bri
+            return 0
+        except Exception as e:
+            print(e)
+            return -1
+
+    def add_span(self, spa: Span) -> int:
+        try:
+            self.spans.append(spa)
+            self.spans.sort()
+            return 0
+        except Exception as e:
+            print(e)
+            return -1
 
     def _project_xml(self) -> Document:
         """

@@ -1,27 +1,28 @@
-from srbpy.model import Model, Bridge
+from srbpy.model import Model, Bridge, Span
+from srbpy.alignment import Align
 # from srbpy.stdlib import std_Piers, std_Beams, std_Foundations, std_Abutments  # 导入自带标准结构库
 # from srbpy.stdlib import std_Joint, std_Bearing  # 导入支座伸缩缝
 from srbpy.stdlib.std_piers import *
+import json
 
 # ---------------------------------------------------------------
 # 初始化环境
 md = Model()
-# 导入路线资源
-m1k = md.load_align(path="00-MainLine/M1K-0312", name="M1K")
-m2k = md.load_align(path="00-MainLine/M2K-0312", name="M2K")
-m2k.set_width(width=21.6)  # 等宽桥
-m1k.set_width(dxf_path="00-MainLine/主线边线.dxf")  # 指定边线文件
-# 导入桥梁资源
-Br1 = Bridge(name="SEC201", )
+ali = Align(path="00-MainLine/M1K-0312", name="M1K")
+ali.set_width(dxf_path="00-MainLine/主线边线.dxf")  # 指定边线文件
+bri = Bridge(name="BridgeA")
+spa = Span(align=ali, bridge=bri, station=16500, ang_deg=90)
 
-md.bridges["SEC201"] = Br1  # 或者可以用下面这种方法添加桥梁布置
-md.load_bridge(obj=Br1)
+
+md.add_align(ali)
+md.add_bridge(bri)
+md.add_span(spa)
 
 # 桥跨布置
-md.spans.add(align=m1k, bridge=Br1, station=16410, ang_deg=90)  # 增加单点
-md.spans.read_csv("00-MainLine/SEC201.csv")
 
-aa = md.spans[0]
+#md.spans.read_csv("00-MainLine/SEC201.csv")
+
+#aa = md.spans[0]
 
 # 桥梁实例化
 
@@ -70,4 +71,4 @@ md.spans[0].pier = C1
 #    else:
 #        be.ed_span.set(Bearing1)
 #
-md.save_srb("bin/TestProject")
+md.save_srb("bin/TestProject2")
