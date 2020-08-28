@@ -1,13 +1,14 @@
 import os
 
-from numpy import pi
-from ezdxf.math import Vector
+from PyAngle import Angle
+from numpy import pi, cos
+from ezdxf.math import Vector, Vec2
 
 from srbpy.alignment.align_cg import CG
 from srbpy.alignment.align_dmx import DMX
 from srbpy.alignment.align_pqx import PQX
 from srbpy.alignment.align_sqx import SQX
-from srbpy.extension import cut_dxf
+from srbpy.extension import cut_dxf, signed_angle_between
 
 
 class Align(object):
@@ -38,6 +39,8 @@ class Align(object):
             self._sqx = SQX(os.path.join(path, basename + ".SQX"))
             self._dmx = DMX(os.path.join(path, basename + ".DMX"))
             self._cg = CG(os.path.join(path, basename + ".CG"))
+            self.start_pk = self._pqx.start_pk
+            self.end_pk = self._pqx.end_pk
         else:
             raise FileNotFoundError("路线数据文件错误或未找到.")
 
@@ -139,17 +142,26 @@ class Align(object):
         """
         return self._sqx.get_zp(pk)
 
-    def get_cross_slope(self, pk: float):
+    def get_cross_slope(self, pk: float, angle: float = 0.5 * pi):
         """
         获取任意里程处纵坡。
 
         Args:
             pk (float): 里程桩号
+            angle (float): 斜交角, 正交时为0.5*pi, 逆时针为正, 默认值为0.5*pi.
 
         Returns:
             (float,float) : 左横坡,右横坡
         """
-        return self._cg.get_hp(pk)
+        if angle == 0.5 * pi:
+            return self._cg.get_hp(pk)
+        else:
+            c_elevation = self.get_elevation(pk)
+            left_pk, right_pk = self.get_lrpk(pk, angle)
+            left_w, right_w = self.get_width(pk, angle)
+            left_elevation = c_elevation - self.get_width(left_pk)[0] * self.get_cross_slope(left_pk)[0]
+            right_elevation = c_elevation + self.get_width(right_pk)[1] * self.get_cross_slope(right_pk)[1]
+            return (c_elevation - left_elevation) / left_w, (right_elevation - c_elevation) / right_w
 
     def set_width(self, width: float = 0, lw: float = 0, rw: float = 0, dxf_path: str = ""):
         """
@@ -178,12 +190,13 @@ class Align(object):
         else:
             raise Exception("宽度参数输入有误.")
 
-    def get_width(self, pk: float):
+    def get_width(self, pk: float, angle: float = 0.5 * pi):
         """
         获取任意里程桥面设计宽度
 
         Args:
             pk (float): 里程桩号
+            angle (float): 斜交角, 正交时为0.5*pi, 逆时针为正, 默认值为0.5*pi.
 
         Returns:
             (float,float) : 左宽,右宽
@@ -194,13 +207,135 @@ class Align(object):
                 raise Exception("未定义任何宽度信息.")
             else:
                 cc = Vector(*self.get_coordinate(pk))
-                left = cc + Vector(*self.get_direction(pk)).rotate(0.5 * pi) * 100.0
-                right = cc + Vector(*self.get_direction(pk)).rotate(0.5 * pi) * -100.0
-                lw = cut_dxf(self._width_dxf, cc, left)
-                rw = cut_dxf(self._width_dxf, cc, right)
+                left = cc + Vector(*self.get_direction(pk)).rotate(angle) * 100.0
+                right = cc + Vector(*self.get_direction(pk)).rotate(angle) * -100.0
+                lw, vecL = cut_dxf(self._width_dxf, cc, left)
+                rw, vecR = cut_dxf(self._width_dxf, cc, right)
                 if isinstance(lw, float) and isinstance(rw, float):
                     return lw, rw
                 else:
                     raise Exception("宽度文件在里程%.3f处无法推断宽度." % pk)
         else:
-            return self._left_w, self._right_w
+            if angle == 0.5 * pi:
+                return self._left_w, self._right_w
+            else:
+                lpt, rpt = self.get_extreme(pk, angle)
+                center = Vec2(*self.get_coordinate(pk))
+                return center.distance(lpt), center.distance(rpt)
+
+    def get_extreme(self, pk: float, angle: float = 0.5 * pi):
+        """
+        获取任意桩号沿任意偏角的左右桥面极点
+
+        Args:
+            pk (float): 里程桩号
+            angle (float): 斜交角, 正交时为0.5*pi, 逆时针为正, 默认值为0.5*pi.
+
+        Returns:
+            Vec2,Vec2 : 左侧边缘坐标，右侧边缘坐标
+
+        """
+        pkl, pkr = self.get_lrpk(pk, angle)
+        norm_l = Vec2(self.get_direction(pkl))
+        width_l = self.get_width(pkl)[0]
+        pt_left = Vec2(*self.get_coordinate(pkl)) + norm_l.rotate(0.5 * pi) * width_l
+        norm_r = Vec2(self.get_direction(pkr))
+        width_r = self.get_width(pkr)[1]
+        pt_right = Vec2(*self.get_coordinate(pkr)) - norm_r.rotate(0.5 * pi) * width_r
+        return pt_left, pt_right
+
+    def get_lrpk(self, pk: float, angle: float = 0.5 * pi):
+        """
+        获取任意里程桥面左右侧对应桩号
+
+        Args:
+            pk (float): 里程桩号
+            angle (float): 斜交角, 正交时为0.5*pi, 逆时针为正, 默认值为0.5*pi.
+
+        Returns:
+            (float,float) : 左侧边线桩号,右侧边线桩号
+
+        """
+        if self._right_w == 0 and self._left_w == 0:
+            if self._width_dxf == "":
+                raise Exception("未定义任何宽度信息.")
+            else:
+                cc = Vector(*self.get_coordinate(pk))
+                left = cc + Vector(*self.get_direction(pk)).rotate(angle) * 100.0
+                right = cc + Vector(*self.get_direction(pk)).rotate(angle) * -100.0
+                lw, ptl = cut_dxf(self._width_dxf, cc, left)
+                rw, ptr = cut_dxf(self._width_dxf, cc, right)
+                if isinstance(lw, float) and isinstance(rw, float):
+                    pkl = self.get_station_by_point(ptl[0], ptl[1])
+                    pkr = self.get_station_by_point(ptr[0], ptr[1])
+                    return pkl, pkr
+                else:
+                    raise Exception("宽度文件在里程%.3f处无法推断宽度." % pk)
+        else:
+            pkl = self.binary_search(
+                range=[max(self.start_pk, pk - 100), min(self.end_pk, pk + 100)],
+                evaluate=self._better,
+                precision=1e-10,
+                center=pk,
+                tar_ang=angle
+            )
+            pkr = self.binary_search(
+                range=[max(self.start_pk, pk - 100), min(self.end_pk, pk + 100)],
+                evaluate=self._better,
+                precision=1.0e-10,
+                center=pk,
+                tar_ang=angle + pi
+            )
+            return pkl, pkr
+
+    def _better(self, pk1, pk2, center: float, tar_ang: float):
+        """
+        求解center至边线夹角更接近tar_ang的位置
+
+        Args:
+            pk1 (float): 桩号1
+            pk2 (float): 桩号2
+            center (float): 中心点桩号
+            tar_ang: 弧度，目标夹角，左侧为逆时针小于pi，右侧大于pi
+
+        Returns:
+
+        """
+        norm = Vec2(*self.get_direction(center))
+        ccpt = Vec2(*self.get_coordinate(center))
+        pkm = (pk1 + pk2) * 0.5
+        wl1, wr1 = self.get_width(pk1)
+        wlm, wrm = self.get_width(pkm)
+        wl2, wr2 = self.get_width(pk2)
+        if tar_ang <= pi:  # 左侧目标角度
+            find_dir = 0.5 * pi
+            w1 = wl1
+            wm = wlm
+            w2 = wl2
+        else:
+            find_dir = -0.5 * pi
+            w1 = wr1
+            wm = wrm
+            w2 = wr2
+
+        pt1 = Vec2(*self.get_coordinate(pk1)) + Vec2(*self.get_direction(pk1)).rotate(find_dir) * w1
+        ptm = Vec2(*self.get_coordinate(pkm)) + Vec2(*self.get_direction(pkm)).rotate(find_dir) * wm
+        pt2 = Vec2(*self.get_coordinate(pk2)) + Vec2(*self.get_direction(pk2)).rotate(find_dir) * w2
+
+        val1 = signed_angle_between(norm, pt1 - ccpt)
+        valm = signed_angle_between(norm, ptm - ccpt)
+        val2 = signed_angle_between(norm, pt2 - ccpt)
+        if (val1 - tar_ang) * (val2 - tar_ang) < 0:
+            if (val1 - tar_ang) * (valm - tar_ang) < 0:
+                return pk1, pkm
+            else:
+                return pkm, pk2
+        else:
+            return None
+
+    def binary_search(self, range, evaluate, precision, **kwargs):
+        st = range[0]
+        ed = range[-1]
+        while abs(ed - st) > precision:
+            st, ed = evaluate(st, ed, **kwargs)
+        return (st + ed) * 0.5

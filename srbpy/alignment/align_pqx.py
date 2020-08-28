@@ -299,10 +299,21 @@ class PQX(object):
         out : list
             切线单位向量坐标值
         """
-        x0 = self.get_coordinate(pk - delta)[0]
-        y0 = self.get_coordinate(pk - delta)[1]
-        x1 = self.get_coordinate(pk + delta)[0]
-        y1 = self.get_coordinate(pk + delta)[1]
+        if pk == self.end_pk:
+            x0 = self.get_coordinate(pk - delta)[0]
+            y0 = self.get_coordinate(pk - delta)[1]
+            x1 = self.get_coordinate(pk)[0]
+            y1 = self.get_coordinate(pk)[1]
+        elif pk == self.start_pk:
+            x0 = self.get_coordinate(pk)[0]
+            y0 = self.get_coordinate(pk)[1]
+            x1 = self.get_coordinate(pk + delta)[0]
+            y1 = self.get_coordinate(pk + delta)[1]
+        else:
+            x0 = self.get_coordinate(pk - delta)[0]
+            y0 = self.get_coordinate(pk - delta)[1]
+            x1 = self.get_coordinate(pk + delta)[0]
+            y1 = self.get_coordinate(pk + delta)[1]
         ll = np.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1))
         return [(x1 - x0) / ll, (y1 - y0) / ll]
 

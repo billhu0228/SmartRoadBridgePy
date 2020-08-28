@@ -9,8 +9,8 @@ md = Model()
 # 导入路线资源
 m1k = md.load_align(path="00-MainLine/M1K-0312", name="M1K")
 m2k = md.load_align(path="00-MainLine/M2K-0312", name="M2K")
-m1k.set_width(width=21.6)  # 等宽桥
-m2k.set_width(dxf_path="00-MainLine/主线边线.dxf")  # 指定边线文件
+m2k.set_width(width=21.6)  # 等宽桥
+m1k.set_width(dxf_path="00-MainLine/主线边线.dxf")  # 指定边线文件
 # 导入桥梁资源
 Br1 = Bridge(name="SEC201", )
 
@@ -18,7 +18,7 @@ md.bridges["SEC201"] = Br1  # 或者可以用下面这种方法添加桥梁布�
 md.load_bridge(obj=Br1)
 
 # 桥跨布置
-md.spans.add(align=m1k, bridge=Br1, station=10300, ang_deg=90)  # 增加单点
+md.spans.add(align=m1k, bridge=Br1, station=16410, ang_deg=90)  # 增加单点
 md.spans.read_csv("00-MainLine/SEC201.csv")
 
 aa = md.spans[0]
@@ -70,4 +70,4 @@ md.spans[0].pier = C1
 #    else:
 #        be.ed_span.set(Bearing1)
 #
-md.save_srb("bin/TestBridge")
+md.save_srb("bin/TestProject")

@@ -2,7 +2,7 @@ import os
 import zipfile
 
 from PyAngle import Angle
-from numpy import loadtxt
+from numpy import loadtxt, pi
 from xml.dom.minidom import Document
 from srbpy.alignment.align import Align
 
@@ -13,18 +13,27 @@ class Bridge(object):
 
 
 class Span(object):
-    """
-    跨径线类
 
+    def __init__(self, align: Align, bridge: Bridge, station: float, angle: float = 0.5 * pi):
+        """
+        跨径线对象
 
+        Args:
+            align (Align): 跨径线对应路线
+            bridge (Bridge): 跨径线对应桥梁
+            station (float): 跨径线桩号
+            angle (float): 斜交角, 正交时为0.5*pi, 逆时针为正, 默认值为0.5*pi.
 
-    """
-
-    def __init__(self, align: Align, bridge: Bridge, station: float, angle: float):
+        """
         self.align = align
         self.bridge = bridge
         self.station = station
         self.angle = angle
+        self.elevation = align.get_elevation(station)
+        self.ground_elevation = align.get_ground_elevation(station)
+        self.width_left, self.width_right = align.get_width(station, angle)
+        self.hp_left,self.hp_right=align.get_cross_slope(station,angle)
+
         self.pier = None
         self.foundation = None
         self.mj = None
@@ -46,7 +55,7 @@ class Span(object):
             raise Exception("无法与非Span类进行比较.")
 
     def __add__(self, dist: float):
-        return Span(self.align, self.station + dist, self.angle)
+        return Span(self.align,self.bridge, self.station + dist, self.angle)
 
     def __sub__(self, other) -> float:
         if isinstance(other, Span):
@@ -160,8 +169,8 @@ class Model(object):
 
     def save_srb(self, filename):
         CLEANTMPS = True
-        tmp,ex = os.path.splitext(filename)
-        file=tmp+'.srb'
+        tmp, ex = os.path.splitext(filename)
+        file = tmp + '.srb'
         z = zipfile.ZipFile(file, 'w', zipfile.ZIP_DEFLATED)
 
         proj_doc = self._project_xml()
