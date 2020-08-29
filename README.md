@@ -1,14 +1,18 @@
 
 ---
 
-# 路桥设计脚本 + XML标准数据格式定义
+# SrbPy + *.srb
 
-## XML标准数据模式定义
+## XML中间交换格式
 
-[详细说明](./docs/standards/中间交换文件格式标准.md)
+基于xml的标准数据格式请参考 [详细说明](./docs/standards/中间交换文件格式标准.md) 。
 
-## 路桥设计 Python 脚本
-> 将原来的 SmartRoadBridge.Alignment 库的核心算法迁移到 Python 库。并给用户提供一套命令流，用于生成XML标准数据格式文件。
+## SrbPy
+ 
+提供了两个子模块：
+ 
+ - 路线模块(srbpy.alignment)，用于解析EICAD路线数据包并解析.
+ - 模型(srbpy.model), 用于建模。
 
-
+用法及包详情请参考[文档](https://smartroadbridgepy.readthedocs.io/zh_CN/latest/srbpy.html#module-srbpy) 。
 

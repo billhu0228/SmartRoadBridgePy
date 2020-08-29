@@ -1,3 +1,6 @@
+"""
+路线元素的基本点
+"""
 class BPD(object):
     def __init__(self, pk, h, r):
         self.pk = pk

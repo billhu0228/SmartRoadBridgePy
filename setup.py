@@ -6,7 +6,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='srbpy',  # Required
-    version='0.0.4',  # Required
+    version='0.0.6',  # Required
     description='A road design Python project',  # Optional
     long_description=long_description,  # Optional
     long_description_content_type='text/markdown',  # Optional (see note above)
@@ -41,7 +41,7 @@ setup(
 
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    package_dir={'': 'src'},
+    # package_dir={'': 'src'},
 
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
@@ -52,7 +52,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(where="src"),  # Required
+    packages=find_packages(),  # Required
     python_requires='>=3.5, <4',
 
     # This field lists other packages that your project depends on to run.
@@ -63,7 +63,8 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
         'numpy',
-        'scikit-spatial>=4'
+        'scikit-spatial>=4.0.0',
+        'PyAngle>=2.2.0'
     ],  # Optional
 
     # package_data={  # Optional

@@ -131,4 +131,6 @@ dmypy.json
 # Other
 .svn/  
 .idea
-/src/Test/*
+/docs/srbpy-doc/build/*
+/srbpy/test/test-queue.py
+/srbpy/test/bin/
