@@ -5,9 +5,9 @@ import numpy as np
 
 
 class SQX(object):
-    __BPDList = []
 
     def __init__(self, file=""):
+        self.__BPDList = []
         with open(file, 'r') as fid:
             text = fid.readlines()
         for i, line in enumerate(text):

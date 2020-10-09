@@ -119,12 +119,13 @@ class Align(object):
         """
         return self._sqx.get_bg(pk)
 
-    def get_ground_elevation(self, pk: float) -> float:
+    def get_ground_elevation(self, pk: float, dist: float) -> float:
         """
         获取任意里程处地面标高。
 
         Args:
             pk (float): 里程桩号
+            dist (float): 斜距, 向右为正
 
         Returns:
             float: 标高

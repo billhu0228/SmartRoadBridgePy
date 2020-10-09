@@ -6,6 +6,10 @@ ali.set_width(width=21.6)
 bri = Bridge(name="BridgeA")
 spa = Span(align=ali, bridge=bri, station=16500, ang_deg=90)
 
+ele=ali.get_ground_elevation(200)
+ele2=ali.get_ground_elevation(16000)
+print(ele,ele2)
+
 md = Model()
 md.add_align(ali)
 md.add_bridge(bri)
