@@ -418,7 +418,14 @@ class PQX(object):
         """
         assert pk1 <= pk2
         p1 = Point(list(self.get_coordinate(pk1)))
-        p2 = Point(list(self.get_coordinate(pk2)))
+
+        # 修改了因pk2超过endpk造成的错误 -bill 10.15
+        # p2 = Point(list(self.get_coordinate(pk2)))
+        if abs(pk2-self.end_pk)<1.0e-6:
+            p2 = Point(list(self.get_coordinate(self.end_pk)))
+        else:
+            p2 = Point(list(self.get_coordinate(pk2)))
+        #
         if p1.distance_point(pt) < p2.distance_point(pt):
             return pk1, 0.5 * (pk1 + pk2), p1.distance_point(pt)
         else:
