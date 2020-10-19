@@ -2,7 +2,7 @@ import json
 import os
 
 from PyAngle import Angle
-from numpy import pi, cos
+from numpy import pi, cos, sin
 from ezdxf.math import Vector, Vec2
 
 from srbpy.alignment.align_cg import CG
@@ -118,6 +118,29 @@ class Align(object):
 
         """
         return self._sqx.get_bg(pk)
+
+    def get_surface_elevation(self, pk: float, dist: float, angle: float = 0.5 * pi) -> float:
+        """
+        获取任意里程，斜距下桥面标高.
+
+        Args:
+            pk (float): 里程桩号
+            dist (float): 斜距, 向右为正, 可大于桥面宽度
+            angle (float): 斜交角, 正交时为0.5*pi, 逆时针为正, 默认值为0.5*pi.
+
+        Returns:
+            float : 设计高程
+        """
+
+        center = Vec2(*self.get_coordinate(pk))
+        norm_l = Vec2(self.get_direction(pk))
+        pt = center - norm_l.rotate(angle) * dist
+        pk_new = self.get_station_by_point(pt[0], pt[1])
+        center_new=Vec2(self.get_coordinate(pk_new))
+        dist_new=self.get_side(pt[0],pt[1])*pt.distance(center_new)
+        ele_new=self.get_elevation(pk_new)
+        hp=self.get_cross_slope(pk_new)[0] if self.get_side(pt[0],pt[1])<0 else self.get_cross_slope(pk_new)[1]
+        return ele_new+dist_new*hp
 
     def get_ground_elevation(self, pk: float, dist: float) -> float:
         """
