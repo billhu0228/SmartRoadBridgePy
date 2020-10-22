@@ -6,7 +6,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='srbpy',  # Required
-    version='0.1.0',  # Required
+    version='0.1.1',  # Required
     description='A road design Python project',  # Optional
     long_description=long_description,  # Optional
     long_description_content_type='text/markdown',  # Optional (see note above)
