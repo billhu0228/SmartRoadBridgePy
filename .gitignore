@@ -171,3 +171,4 @@ dmypy.json
 x64/
 Debug/
 .vs/
+/pybind11/
