@@ -1,12 +1,48 @@
+from glob import glob
+
 from setuptools import setup, find_packages
+from pybind11.setup_helpers import Pybind11Extension, build_ext
+from pybind11 import get_cmake_dir
+
+
 import pathlib
 
 here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
+
+# Available at setup time due to pyproject.toml
+from pybind11.setup_helpers import Pybind11Extension, build_ext
+from pybind11 import get_cmake_dir
+
+__version__ = "0.0.1"
+ext_modules = [
+    Pybind11Extension("align_pqx",
+        sorted([
+            "srbpy/alignment/src/Angle.cpp"
+            "srbpy/alignment/src/base.cpp"
+            "srbpy/alignment/src/Vector.cpp"
+            "srbpy/alignment/src/PQXElement.cpp"
+            "srbpy/alignment/src/Straight.cpp"
+            "srbpy/alignment/src/Arc.cpp"
+            "srbpy/alignment/src/Sprial.cpp"
+            "srbpy/alignment/src/PQX.cpp"
+            "srbpy/alignment/src/bind.cpp"
+        ]),
+        # Example: passing in the version to the compiled code
+        define_macros = [('VERSION_INFO', __version__)],
+        ),
+]
+
+
+
+
+
+
+
 setup(
     name='srbpy',  # Required
-    version='0.1.1',  # Required
+    version='0.1.2',  # Required
     description='A road design Python project',  # Optional
     long_description=long_description,  # Optional
     long_description_content_type='text/markdown',  # Optional (see note above)
@@ -52,7 +88,9 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(),  # Required
+    packages=find_packages(exclude=['backup']),  # Required
+    # ext_modules=ext_modules,
+    # cmdclass=dict(build_ext=build_ext),
     python_requires='>=3.5, <4',
 
     # This field lists other packages that your project depends on to run.
@@ -64,7 +102,8 @@ setup(
     install_requires=[
         'numpy',
         'scikit-spatial>=4.0.0',
-        'PyAngle>=2.2.0'
+        'PyAngle>=2.2.0',
+        'pybind11>=2.6.0',
     ],  # Optional
 
     # package_data={  # Optional

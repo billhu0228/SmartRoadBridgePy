@@ -34,7 +34,7 @@ class Span(object):
         self.station = station
         self.angle = Angle.from_degrees(ang_deg).to_rad()
         self.elevation = align.get_elevation(station)
-        self.ground_elevation = align.get_ground_elevation(station)
+        self.ground_elevation = align.get_ground_elevation(station, 0)
         self.width_left, self.width_right = align.get_width(station, self.angle)
         self.hp_left, self.hp_right = align.get_cross_slope(station, self.angle)
 
@@ -92,7 +92,8 @@ class SpanCollection(list):
         self.align_dict = align_dict
         self.bridge_dict = bridge_dict
 
-    def add(self, s: Span = None, align: Align = None, bridge: Bridge = None, station: float = None, ang_deg: float = None) -> Span:
+    def add(self, s: Span = None, align: Align = None, bridge: Bridge = None, station: float = None,
+            ang_deg: float = None) -> Span:
         if s != None:
             res = s
         elif align != None and bridge != None:

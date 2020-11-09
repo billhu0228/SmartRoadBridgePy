@@ -45,7 +45,7 @@ class Align(object):
         else:
             raise FileNotFoundError("路线数据文件错误或未找到.")
 
-    def get_station_by_point(self, x0: float, y0: float, step: int = 10, delta: float = 1e-9) -> float:
+    def get_station_by_point(self, x0: float, y0: float, step: int = 20, delta: float = 1e-9) -> float:
         """
         根据单点获得正交桩号(可能多解)。
 

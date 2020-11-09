@@ -12,4 +12,4 @@ EI路线数据类Align.
 
 """
 
-from .align import Align
+from srbpy.alignment.align import Align

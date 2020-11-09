@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Straight.h"
 #include "Vector.h"
-#include "Sprial.h"
+#include "Spiral.h"
 #include <PQX.h>
 
 

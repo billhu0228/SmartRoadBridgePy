@@ -1,7 +1,7 @@
 from srbpy.model import Model, Bridge, Span
 from srbpy.alignment import Align
-# from srbpy.stdlib import std_Piers, std_Beams, std_Foundations, std_Abutments  # 导入自带标准结构库
-# from srbpy.stdlib import std_Joint, std_Bearing  # 导入支座伸缩缝
+from srbpy.stdlib import std_Piers, std_Beams, std_Foundations, std_Abutments  # 导入自带标准结构库
+from srbpy.stdlib import std_Joint, std_Bearing  # 导入支座伸缩缝
 from srbpy.stdlib.std_piers import *
 import json
 
@@ -12,6 +12,7 @@ ali = Align(path="00-MainLine/M1K-0312", name="M1K")
 ali.set_width(dxf_path="00-MainLine/主线边线.dxf")  # 指定边线文件
 bri = Bridge(name="BridgeA")
 spa = Span(align=ali, bridge=bri, station=16500, ang_deg=90)
+
 
 
 md.add_align(ali)
@@ -72,3 +73,4 @@ md.spans[0].pier = C1
 #        be.ed_span.set(Bearing1)
 #
 md.save_srb("bin/TestProject2")
+md.save_sql()
