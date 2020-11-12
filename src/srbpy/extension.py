@@ -3,6 +3,7 @@ from ezdxf.math import ConstructionLine, Vec2, ConstructionArc, ConstructionCirc
 from skspatial.objects import Vector
 from numpy import sqrt, arctan2, pi
 import ezdxf
+from .public import *
 
 
 def rotate2d(vec: Vector, ang: Angle):
@@ -21,7 +22,7 @@ def length(vec: Vector) -> float:
         return sqrt(vec[0] ** 2 + vec[1] ** 2)
 
 
-def intersection_seg_arc(h, k, r, x0, y0, x1, y1):
+def _unused_intersection_seg_arc(h, k, r, x0, y0, x1, y1):
     """
     求线段和圆弧的交点
 
@@ -88,28 +89,35 @@ def get_point_angle(cc: ConstructionCircle, x: float, y: float):
 
 
 def intersection(master: ConstructionLine, slaver: ConstructionArc):
-    res = intersection_seg_arc(slaver.center.x, slaver.center.y, slaver.radius, master.start.x, master.start.y, master.end.x, master.end.y)
+    res = intersection_seg_arc(slaver.center.x, slaver.center.y, slaver.radius, master.start.x, master.start.y,
+                               master.end.x, master.end.y)
     if res == None or len(res) == 0:
         return None
     elif len(res) == 2:
         tmp = ConstructionCircle(slaver.center, slaver.radius)
         IntPointAng = Angle.from_rad(get_point_angle(tmp, res[0], res[1])).to_degrees()
-        if slaver.start_angle <= slaver.end_angle and (slaver.start_angle <= IntPointAng and IntPointAng <= slaver.end_angle):
+        if slaver.start_angle <= slaver.end_angle and (
+                slaver.start_angle <= IntPointAng and IntPointAng <= slaver.end_angle):
             return res[0], res[1]
-        elif slaver.end_angle <= slaver.start_angle and not (slaver.end_angle <= IntPointAng and IntPointAng <= slaver.start_angle):
+        elif slaver.end_angle <= slaver.start_angle and not (
+                slaver.end_angle <= IntPointAng and IntPointAng <= slaver.start_angle):
             return res[0], res[1]
     else:
         tmp = ConstructionCircle(slaver.center, slaver.radius)
         IntPointAng = Angle.from_rad(get_point_angle(tmp, res[0], res[1])).to_degrees()
-        if slaver.start_angle <= slaver.end_angle and (slaver.start_angle <= IntPointAng and IntPointAng <= slaver.end_angle):
+        if slaver.start_angle <= slaver.end_angle and (
+                slaver.start_angle <= IntPointAng and IntPointAng <= slaver.end_angle):
             return res[0], res[1]
-        elif slaver.end_angle <= slaver.start_angle and not (slaver.end_angle <= IntPointAng and IntPointAng <= slaver.start_angle):
+        elif slaver.end_angle <= slaver.start_angle and not (
+                slaver.end_angle <= IntPointAng and IntPointAng <= slaver.start_angle):
             return res[0], res[1]
 
         IntPointAng = Angle.from_rad(get_point_angle(tmp, res[2], res[3])).to_degrees()
-        if slaver.start_angle <= slaver.end_angle and (slaver.start_angle <= IntPointAng and IntPointAng <= slaver.end_angle):
+        if slaver.start_angle <= slaver.end_angle and (
+                slaver.start_angle <= IntPointAng and IntPointAng <= slaver.end_angle):
             return res[2], res[3]
-        elif slaver.end_angle <= slaver.start_angle and not (slaver.end_angle <= IntPointAng and IntPointAng <= slaver.start_angle):
+        elif slaver.end_angle <= slaver.start_angle and not (
+                slaver.end_angle <= IntPointAng and IntPointAng <= slaver.start_angle):
             return res[2], res[3]
     return None
 
@@ -133,9 +141,11 @@ def cut_dxf(dxf_file, center: Vector, side: Vector):
     msp = doc.modelspace()
     for e in msp:
         if e.dxftype() == 'LINE':
-            byLine = ConstructionLine(e.dxf.start, e.dxf.end)
-            pt = cutLine.intersect(byLine)
-            if isinstance(pt, Vec2):
+            # byLine = ConstructionLine(e.dxf.start, e.dxf.end)
+            coord = intersection_seg_seg(e.dxf.start, e.dxf.end, cutLine.start, cutLine.end)
+            # pt = cutLine.intersect(byLine)
+            if coord != None:
+                pt = Vec2(*coord)
                 pts.append(pt)
         elif e.dxftype() == 'ARC':
             byArc = ConstructionArc(e.dxf.center, e.dxf.radius, e.dxf.start_angle, e.dxf.end_angle)

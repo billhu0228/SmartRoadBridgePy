@@ -74,7 +74,7 @@ class Align(object):
 
 
         """
-        return self._pqx.get_dir(pk, delta)
+        return [self._pqx.get_dir(pk, delta)[0],self._pqx.get_dir(pk, delta)[1]]
 
     def get_coordinate(self, pk: float):
         """
@@ -88,7 +88,7 @@ class Align(object):
 
         """
 
-        return self._pqx.get_coordinate(pk)
+        return [self._pqx.get_coordinate(pk)[0],self._pqx.get_coordinate(pk)[1]]
 
     def get_side(self, x0: float, y0: float):
         """
