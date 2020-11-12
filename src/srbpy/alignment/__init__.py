@@ -12,4 +12,7 @@ EI路线数据类Align.
 
 """
 
-from srbpy.alignment.align import Align
+
+from .align import Align
+
+__all__ = [f for f in dir() if not f.startswith("_")]

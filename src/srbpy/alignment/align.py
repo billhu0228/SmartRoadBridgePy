@@ -9,7 +9,7 @@ from .align_cg import CG
 from .align_dmx import DMX
 from .align_pqx import PQX
 from .align_sqx import SQX
-from srbpy.extension import cut_dxf, signed_angle_between
+from ..extension import cut_dxf, signed_angle_between
 
 
 class Align(object):

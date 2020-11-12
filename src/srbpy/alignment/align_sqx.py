@@ -1,5 +1,5 @@
 import copy
-from srbpy.alignment.align_base import BPD
+from .align_base import BPD
 import re
 import numpy as np
 

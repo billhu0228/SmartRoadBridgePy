@@ -172,3 +172,5 @@ x64/
 Debug/
 .vs/
 /pybind11/
+/backup/alignment/
+/backup/cpp/

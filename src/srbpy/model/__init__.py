@@ -9,6 +9,6 @@
 
 """
 
-from srbpy.model.core import Model
-from srbpy.model.core import Bridge
-from srbpy.model.core import Span
+from .core import Model
+from .core import Bridge
+from .core import Span
