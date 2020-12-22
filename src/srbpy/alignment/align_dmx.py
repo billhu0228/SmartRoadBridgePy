@@ -5,9 +5,8 @@ import numpy as np
 
 
 class DMX(object):
-    __RCDList = []
-
     def __init__(self, file=""):
+        self.__RCDList = []
         with open(file, 'r') as fid:
             text = fid.readlines()
         for i, line in enumerate(text):
@@ -19,6 +18,7 @@ class DMX(object):
             pt.elevation = float(xx[1])
             self.__RCDList.append(pt)
             self.__RCDList.sort(key=lambda x: x.pk)
+        self.Text = ''.join(text)
 
     def get_bg(self, pk: float) -> float:
         if np.abs(pk) < 1e-3:

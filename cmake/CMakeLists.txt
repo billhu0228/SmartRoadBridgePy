@@ -1,29 +1,29 @@
-cmake_minimum_required(VERSION 2.8.12)
-project(test_cpp)
+cmake_minimum_required(VERSION 3.16)
+project(cmake)
 
-set(ROOT "..")
-set(SOURCE_DIR "${ROOT}/src/srbpy/public")
+set(CMAKE_CXX_STANDARD 11)
+
+include_directories(../src/srbpy/alignment)
+#include_directories(../src/srbpy/public)
+#include_directories(../lib/pybind11/include)
+#include_directories(C:/Users/BillHu/AppData/Local/Programs/Python/Python37/include)
+#link_directories(C:/Users/BillHu/AppData/Local/Programs/Python/Python37/libs)
 set(Boost_INCLUDE_DIR C:/Boost/include/boost-1_74)
-set(PYTHON_DIR "C:/Users/BillHu/AppData/Local/Programs/Python/Python37")
-
-
-include_directories(${SOURCE_DIR})
 include_directories(${Boost_INCLUDE_DIR})
-include_directories(
-        ${PYTHON_DIR}/include
-        ${ROOT}/lib/pybind11/include
-)
 
-set(SOURCES
-        ${SOURCE_DIR}/gfunc.cpp
-        main.cpp
+set(AlignCppSrc
+        ../src/srbpy/alignment/Angle.cpp
+        ../src/srbpy/alignment/base.cpp
+        ../src/srbpy/alignment/Vector.cpp
+        ../src/srbpy/alignment/PQXElement.cpp
+        ../src/srbpy/alignment/Straight.cpp
+        ../src/srbpy/alignment/Arc.cpp
+        ../src/srbpy/alignment/Sprial.cpp
+        ../src/srbpy/alignment/PQX.cpp
         )
+file(GLOB PublicCppSrc ../src/srbpy/public/*.cpp)
 
-
-add_subdirectory(H:/pybind11 pybind11_dir)
-
-link_directories(
-        ${PYTHON_DIR}/libs)
-# find_package(PythonLibs REQUIRED)
-
-add_executable(test_cpp ${SOURCES})
+add_executable(cmake
+        main.cpp
+        ${AlignCppSrc}
+        )

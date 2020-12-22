@@ -6,6 +6,7 @@
 #include "PQX.h"
 #include <pybind11\pybind11.h>
 #include <pybind11\operators.h>
+#include <pybind11\stl.h>
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "InfiniteRecursion"
@@ -50,7 +51,7 @@ PYBIND11_MODULE(align_pqx, m) {
 
     py::class_<PQX>(m, "PQX")
             .def(py::init<>())
-            .def(py::init<std::string>())
+            .def(py::init<std::wstring>())
             .def_readwrite("start_pk", &PQX::start_pk)
             .def_readwrite("end_pk", &PQX::end_pk)
             .def_readwrite("start_angle", &PQX::start_angle)
@@ -59,7 +60,9 @@ PYBIND11_MODULE(align_pqx, m) {
             .def("get_dir", &PQX::get_dir)
             .def("get_station_by_point", &PQX::get_station_by_point)
             .def("get_side", &PQX::get_side)
-            .def("__binary_test__", &PQX::__binary_test__);
+            .def("__binary_test__", &PQX::__binary_test__)
+            .def_readonly("Text",& PQX::ICDText);
+
 }
 
 

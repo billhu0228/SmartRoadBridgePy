@@ -3,13 +3,11 @@
 //
 #include <iostream>
 #include <vector>
-#include "gfunc.h"
-
+// #include "gfunc.h"
+#include "PQX.h"
 
 int main(int argc, char *argv[]) {
-    std::vector<double> f = intersection_seg_arc(472408.5956773032, 9856940.507514307, 1393.499999530321,
-                                            471151.5248327673, 9856303.181315701,
-                                            471241.8886555169, 9856346.010972928
-    );
-    std::cout << std::to_string(f[0]) << std::endl;
+    PQX fu = PQX(L"G:\\20191213-肯尼亚高架桥施工图设计(19406)\\01 前方资料\\EI Data\\00-MainLine\\L1K-0926\\L1K-0926.ICD");
+
+    std::wcout << fu.ICDText[3] << std::endl;
 }

@@ -5,7 +5,6 @@ import numpy as np
 
 
 class SQX(object):
-
     def __init__(self, file=""):
         self.__BPDList = []
         with open(file, 'r') as fid:
@@ -23,6 +22,7 @@ class SQX(object):
                 pt.radius = -1
             self.__BPDList.append(pt)
             self.__BPDList.sort(key=lambda x: x.pk)
+        self.Text = ''.join(text)
 
     def __get_ab(self, k: int):
         cur_bpd = self.__BPDList[k]
@@ -63,7 +63,8 @@ class SQX(object):
             for kk, a in enumerate(tmp):
                 if a.pk == pk:
                     break
-            cc = (self.__BPDList[kk].elevation - self.__BPDList[kk - 1].elevation) / (self.__BPDList[kk].pk - self.__BPDList[kk - 1].pk)
+            cc = (self.__BPDList[kk].elevation - self.__BPDList[kk - 1].elevation) / (
+                        self.__BPDList[kk].pk - self.__BPDList[kk - 1].pk)
             y0 = (pk - self.__BPDList[kk - 1].pk) * cc + self.__BPDList[kk - 1].elevation
             begin_a, end_a, dir_a = self.__get_ab(kk - 1)
             begin_b, end_b, dir_b = self.__get_ab(kk)

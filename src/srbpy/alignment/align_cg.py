@@ -5,9 +5,8 @@ import numpy as np
 
 
 class CG(object):
-    __CGDList = []
-
     def __init__(self, file=""):
+        self.__CGDList = []
         is_read_first = False
         with open(file, 'r') as fid:
             text = fid.readlines()
@@ -38,6 +37,7 @@ class CG(object):
                     pt.r_slope = float(xx[1])
                 self.__CGDList.append(pt)
                 self.__CGDList.sort(key=lambda x: x.pk)
+        self.Text = ''.join(text)
 
     def get_hp(self, pk: float):
         if np.abs(pk) < 1e-4:

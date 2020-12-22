@@ -1,4 +1,7 @@
-//#include <Windows.h>
+#include <locale>
+#include <codecvt>
+#include <string>
+#include <sstream>
 #include "PQX.h"
 #include "PQXElement.h"
 #include "Straight.h"
@@ -26,32 +29,40 @@ PQX::PQX(void) {
 
 }
 
-PQX::PQX(std::string filepath) {
+PQX::PQX(std::wstring filepath) {
     start_pk = 0;
     start_point = Vector();
     start_angle = Angle();
     Vector cur_point = Vector(0, 0);
     Angle cur_angle = Angle(Degree(0));
     string t1;
-    vector<string> text;
+    vector<wstring> text;
 
 
-//    std::wstring widestr = std::wstring(filepath.begin(), filepath.end());
-//    const wchar_t *widecstr = widestr.c_str();
-//    //wchar_t const name[] = PtrToStringChars(file);
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
     fstream fid;
-    fid.open(utf8_to_utf16(filepath), std::ofstream::in);
+    fid.open(filepath, std::ofstream::in);
 
     while (getline(fid, t1)) {
-        text.push_back(t1);
+        std::wstring wide = converter.from_bytes(t1);
+        text.push_back(wide);
     }
     fid.close();
+    std::wstringstream ss;
+    for(size_t i = 0; i < text.size(); ++i)
+    {
+        if(i != 0)
+            ss << L"\n";
+        ss << text[i];
+    }
+    PQX::ICDText= ss.str();
 
-    string line;
+    wstring line;
 
     for (size_t i = 0; i < text.size(); i++) {
         line = text[i];
+
         if (i == 0) {
             start_pk = stod(line);
         } else if (i == 1) {
@@ -67,7 +78,7 @@ PQX::PQX(std::string filepath) {
         } else {
             vector<string> xx;
             boost::split(xx, line, boost::is_any_of(","), boost::token_compress_on);
-            if (line.substr(0, 2) == "//") {
+            if (line.substr(0, 2) == L"//") {
                 continue;
             } else if (xx.size() == 3 && stoi(xx[2]) == 0) {
                 break;
@@ -112,11 +123,11 @@ PQX::PQX(std::string filepath) {
                         st_r = stod(xx[2]);
                         end_r = stod(xx[3]);
                         lr_dir = LeftRightEnum(stoi(xx[3]));
-                        item = new Sprial(idd, aa, st_r,end_r, cur_point, cur_angle, lr_dir);
-                        // »³ÒÉ¹¹Ôìº¯ÊıµÄÖÕµã°ë¾¶ÊäÈë´íÎó£»
+                        item = new Sprial(idd, aa, st_r, end_r, cur_point, cur_angle, lr_dir);
+                        // æ€€ç–‘æ„é€ å‡½æ•°çš„ç»ˆç‚¹åŠå¾„è¾“å…¥é”™è¯¯ï¼›
                         break;
                     default:
-                        throw exception("¶ÁÈ¡ICDÎÄ¼ş´íÎó.");
+                        throw exception("è¯»å–ICDæ–‡ä»¶é”™è¯¯.");
                         break;
                 }
 
@@ -159,7 +170,7 @@ Vector PQX::get_coordinate(double pk) const {
             len_sum_up.push_back(len_sum_up.back() + ll);
         }
         int aa = 0;
-        for (aa = 0; aa < len_sum_up.size(); aa++)// Òª×¢ÒâÕâÀïaaºÍenumerateµÄÇø±ğ
+        for (aa = 0; aa < len_sum_up.size(); aa++)// è¦æ³¨æ„è¿™é‡Œaaå’Œenumerateçš„åŒºåˆ«
         {
             double val = len_sum_up[aa];
             if (val > pk) {
@@ -247,7 +258,7 @@ void PQX::__solve_closer(const Vector &pt, double ret[3]) {
     assert(pk1 <= pk2);
     Vector p1 = get_coordinate(pk1);
     Vector p2;
-    // ĞŞ¸ÄÁËÒòpk2³¬¹ıendpkÔì³ÉµÄ´íÎó -bill 10.15
+    // ä¿®æ”¹äº†å› pk2è¶…è¿‡endpké€ æˆçš„é”™è¯¯ -bill 10.15
     // Vector p2 = get_coordinate(pk2);
     if (abs(pk2 - end_pk) < 1.0e-6) {
         p2 = get_coordinate(end_pk);

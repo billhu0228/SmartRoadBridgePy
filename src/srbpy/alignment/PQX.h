@@ -16,7 +16,7 @@ public:
 
     PQX(void);
 
-    PQX(std::string filepath);
+    PQX(std::wstring filepath);
 
     Vector get_coordinate(double pk) const;
 
@@ -25,6 +25,8 @@ public:
     double get_station_by_point(double x0, double y0, int step = 20, double delta = 1e-9);
 
     int get_side(double x0, double y0);
+
+    std::wstring ICDText;
 
 private:
     std::vector<PQXElement *> elem_collection;

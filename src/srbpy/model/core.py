@@ -1,22 +1,64 @@
+import copy
 import json
 import os
 import zipfile
-
+import numpy as np
+import sqlalchemy
+from decimal import ROUND_HALF_UP, Decimal
 from PyAngle import Angle
 from numpy import loadtxt, pi
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import sessionmaker
+from ..stdlib.std_piers import PierBase
 from xml.dom.minidom import Document
-from srbpy.alignment.align import Align
+from ..alignment.align import Align
+from ..server import Base, Column, String, Text, ForeignKey, relationship, Float, FLOAT, DECIMAL
 
 
-class Bridge(object):
-    def __init__(self, name: str):
+class Bridge(Base):
+    __tablename__ = "bridge_tbl"
+    name = Column('name', String(10), primary_key=True)
+    _f_ali_name = Column('align_name', String(10), ForeignKey("ei_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
+    _f_title_name = Column('title_name', String(120), nullable=True)
+    _align_related = relationship("Align", foreign_keys=[_f_ali_name], cascade='save-update,delete')
+
+    def __init__(self, name: str, al: Align):
         self.name = name
+        self._align_related = al
+
+    def set_title(self, title: str):
+        self._f_title_name = title
 
     def serialize(self):
         return json.dumps({"name": self.name})
 
 
-class Span(object):
+class Span(Base):
+    # 增加ORM映射 -- Bill 2020/11/18
+    __tablename__ = "span_tbl"
+    name = Column("name", String(17), primary_key=True)
+    _fAli_name = Column('align_name', String(10), ForeignKey("ei_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
+    _fBri_name = Column('bridge_name', String(10), ForeignKey("bridge_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
+    align = relationship("Align", foreign_keys=[_fAli_name], cascade='save-update,delete')
+    bridge = relationship("Bridge", foreign_keys=[_fBri_name], cascade='save-update,delete')
+
+    _fStation = Column('Station', DECIMAL(15, 3))
+    _fAngle = Column('Angle', DECIMAL(15, 3))
+    _f_deck_wl = Column('deck_wl', DECIMAL(15, 3), nullable=True)
+    _f_deck_wr = Column('deck_wr', DECIMAL(15, 3), nullable=True)
+    _f_back_wl = Column('back_wl', DECIMAL(15, 3), nullable=True)
+    _f_back_wr = Column('back_wr', DECIMAL(15, 3), nullable=True)
+    _f_front_wl = Column('front_wl', DECIMAL(15, 3), nullable=True)
+    _f_front_wr = Column('front_wr', DECIMAL(15, 3), nullable=True)
+    _fBeam_type = Column('BeamType', String(1), nullable=True)
+    _fPier_type = Column('PierType', String(1), nullable=True)
+    _fDeck_type = Column('DeckType', String(2), nullable=True, default="CT")
+    _fCut_to = Column("cut_to", String(17), nullable=True)
+    _fCut_by = Column("cut_by", String(17), nullable=True)
+    _fHPL = Column("HPL", DECIMAL(15, 3), nullable=True)
+    _fHPR = Column("HPR", DECIMAL(15, 3), nullable=True)
+
+    # 增加ORM映射 -- Bill 2020/11/18
 
     def __init__(self, align: Align, bridge: Bridge, station: float, ang_deg: float = 90):
         """
@@ -41,9 +83,20 @@ class Span(object):
         self.pier = None
         self.foundation = None
         self.mj = None
+        # 增加ORM映射 -- Bill 2020/11/18
+        result = ("%.3f" % (float(Decimal(station).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)))).zfill(9)
+        self.name = align.name + "+" + result
+        self._fStation = station
+        self._fAngle = ang_deg
+        self._fHPL = self.hp_left
+        self._fHPR = self.hp_right
+        self._f_deck_wl = self.width_left
+        self._f_deck_wr = self.width_right
+        # 增加ORM映射 -- Bill 2020/11/18
+        self.pier = None  # 增加结构指定
 
     def __str__(self):
-        return self.align.name + "+%.3f".zfill(7) % self.station
+        return self._fName
 
     def __eq__(self, other):
         if isinstance(other, Span):
@@ -84,6 +137,28 @@ class Span(object):
             "hp_right": self.hp_right,
         }
         return json.dumps(dict)
+
+    def assign_pier(self, name_inst: str, pier_inst: PierBase):
+        """
+        指定属于本处分跨线的桥墩结构实例.
+
+        Args:
+            name: 桥墩编号.
+            pier_inst: 桥墩实例.
+
+        Returns:
+
+        """
+        self.pier = copy.deepcopy(pier_inst)
+        self.pier._fName = name_inst
+        self.pier.align = self.align
+        self.pier.bridge = self.bridge
+        self.pier.span = self
+        self.pier._fStation = self._fStation
+        self.pier._fAngle = self._fAngle
+        self.pier._fSlopeLeft = self._fHPL
+        self.pier._fSlopeRight = self._fHPR
+        pass
 
 
 class SpanCollection(list):
@@ -235,3 +310,27 @@ class Model(object):
         if CLEANTMPS:
             os.remove(fpath)
         z.close()
+
+    def save_sql(self, connect):
+        engine = create_engine(connect, echo=False)
+        event.listen(engine, "before_cursor_execute", add_own_encoders)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        for al in self.alignments.keys():
+            session.add(self.alignments[al])
+        session.commit()
+        for br in self.bridges.keys():
+            session.add(self.bridges[br])
+        session.commit()
+        for sp in self.spans:
+            session.add(sp)
+            if sp.pier != None:
+                session.add(sp.pier)
+        session.commit()
+
+
+def add_own_encoders(conn, cursor, query, *args):
+    # try:
+    #     cursor.connection.encoders[np.float64] = lambda value, encoders: float(value)
+    pass

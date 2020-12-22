@@ -1,4 +1,5 @@
 from PyAngle import Angle
+from ezdxf.drawing import Drawing
 from ezdxf.math import ConstructionLine, Vec2, ConstructionArc, ConstructionCircle
 from skspatial.objects import Vector
 from numpy import sqrt, arctan2, pi
@@ -122,7 +123,7 @@ def intersection(master: ConstructionLine, slaver: ConstructionArc):
     return None
 
 
-def cut_dxf(dxf_file, center: Vector, side: Vector):
+def cut_dxf(dxf_file: Drawing, center: Vector, side: Vector):
     """
     切割dxf文件.
 
@@ -137,20 +138,25 @@ def cut_dxf(dxf_file, center: Vector, side: Vector):
     """
     cutLine = ConstructionLine(center, side)
     pts = []
-    doc = ezdxf.readfile(dxf_file)
+    # doc = ezdxf.readfile(dxf_file)
+    doc = dxf_file
     msp = doc.modelspace()
     for e in msp:
         if e.dxftype() == 'LINE':
             # byLine = ConstructionLine(e.dxf.start, e.dxf.end)
-            coord = intersection_seg_seg(e.dxf.start, e.dxf.end, cutLine.start, cutLine.end)
+            coord = intersection_seg_seg(
+                list(e.dxf.start),
+                list(e.dxf.end),
+                list(cutLine.start),
+                list(cutLine.end))
             # pt = cutLine.intersect(byLine)
-            if coord != None:
+            if coord != None and len(coord) != 0:
                 pt = Vec2(*coord)
                 pts.append(pt)
         elif e.dxftype() == 'ARC':
             byArc = ConstructionArc(e.dxf.center, e.dxf.radius, e.dxf.start_angle, e.dxf.end_angle)
             coord = intersection(cutLine, byArc)
-            if coord != None:
+            if coord != None and len(coord) != 0:
                 pt = Vec2(*coord)
                 pts.append(pt)
 

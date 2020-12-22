@@ -1,6 +1,8 @@
 import json
 import os
+from dataclasses import dataclass, field
 
+import ezdxf
 from PyAngle import Angle
 from numpy import pi, cos, sin
 from ezdxf.math import Vector, Vec2
@@ -10,9 +12,20 @@ from .align_dmx import DMX
 from .align_pqx import PQX
 from .align_sqx import SQX
 from ..extension import cut_dxf, signed_angle_between
+from ..server import Base, Column, String, Text
 
 
-class Align(object):
+class Align(Base):
+    # 增加ORM映射 -- Bill 2020/11/18
+    __tablename__ = "ei_tbl"
+    name = Column('name', String(10), primary_key=True)
+    _fICD = Column('ICD', Text, nullable=True)
+    _fSQX = Column('SQX', Text, nullable=True)
+    _fDMX = Column('DMX', Text, nullable=True)
+    _fCG = Column('CG', Text, nullable=True)
+    _fHDX = Column('HDX', Text, nullable=True)
+    #
+
     _work_dir = ""
     _pqx = None
     _sqx = None
@@ -23,7 +36,7 @@ class Align(object):
     _right_w = 0.0
     _width_dxf = ""
 
-    def __init__(self, path, name=""):
+    def __init__(self, name, path):
         """
         EICAD路线类
 
@@ -40,10 +53,17 @@ class Align(object):
             self._sqx = SQX(os.path.join(path, basename + ".SQX"))
             self._dmx = DMX(os.path.join(path, basename + ".DMX"))
             self._cg = CG(os.path.join(path, basename + ".CG"))
+            # self._hdx=HDX()
             self.start_pk = self._pqx.start_pk
             self.end_pk = self._pqx.end_pk
         else:
             raise FileNotFoundError("路线数据文件错误或未找到.")
+
+        # 增加ORM映射 -- Bill 2020/11/18
+        self._fICD = self._pqx.Text
+        self._fSQX = self._sqx.Text
+        self._fDMX = self._dmx.Text
+        self._fCG = self._cg.Text
 
     def get_station_by_point(self, x0: float, y0: float, step: int = 10, delta: float = 1e-9) -> float:
         """
@@ -74,7 +94,7 @@ class Align(object):
 
 
         """
-        return [self._pqx.get_dir(pk, delta)[0],self._pqx.get_dir(pk, delta)[1]]
+        return [self._pqx.get_dir(pk, delta)[0], self._pqx.get_dir(pk, delta)[1]]
 
     def get_coordinate(self, pk: float):
         """
@@ -88,7 +108,7 @@ class Align(object):
 
         """
 
-        return [self._pqx.get_coordinate(pk)[0],self._pqx.get_coordinate(pk)[1]]
+        return [self._pqx.get_coordinate(pk)[0], self._pqx.get_coordinate(pk)[1]]
 
     def get_side(self, x0: float, y0: float):
         """
@@ -136,11 +156,11 @@ class Align(object):
         norm_l = Vec2(self.get_direction(pk))
         pt = center - norm_l.rotate(angle) * dist
         pk_new = self.get_station_by_point(pt[0], pt[1])
-        center_new=Vec2(self.get_coordinate(pk_new))
-        dist_new=self.get_side(pt[0],pt[1])*pt.distance(center_new)
-        ele_new=self.get_elevation(pk_new)
-        hp=self.get_cross_slope(pk_new)[0] if self.get_side(pt[0],pt[1])<0 else self.get_cross_slope(pk_new)[1]
-        return ele_new+dist_new*hp
+        center_new = Vec2(self.get_coordinate(pk_new))
+        dist_new = self.get_side(pt[0], pt[1]) * pt.distance(center_new)
+        ele_new = self.get_elevation(pk_new)
+        hp = self.get_cross_slope(pk_new)[0] if self.get_side(pt[0], pt[1]) < 0 else self.get_cross_slope(pk_new)[1]
+        return ele_new + dist_new * hp
 
     def get_ground_elevation(self, pk: float, dist: float) -> float:
         """
@@ -211,7 +231,8 @@ class Align(object):
         elif dxf_path != "":
             self._left_w = 0.0
             self._right_w = 0.0
-            self._width_dxf = dxf_path
+            # self._width_dxf = dxf_path
+            self._width_dxf = ezdxf.readfile(dxf_path)
         else:
             raise Exception("宽度参数输入有误.")
 
