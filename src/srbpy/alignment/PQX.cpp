@@ -94,12 +94,20 @@ PQX::PQX(std::wstring filepath) {
                 switch (type_id) {
                     case 1:
                         ll = stod(xx[1]);
+                        // 补充考虑突变夹角
+                        if(xx.size()==3){
+                            cur_angle=stod(xx[2]);
+                        }
                         item = new Straight(ll, cur_point, cur_angle);
                         break;
                     case 2:
                         rr = stod(xx[1]);
                         ll = stod(xx[2]);
                         lr_dir = LeftRightEnum(stoi(xx[3]));
+                        // 补充考虑突变夹角
+                        if(xx.size()==5){
+                            cur_angle=stod(xx[4]);
+                        }
                         item = new Arc(rr, ll, cur_point, cur_angle, lr_dir);
                         break;
                     case 3:

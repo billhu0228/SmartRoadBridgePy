@@ -13,6 +13,7 @@ from ..stdlib.std_piers import PierBase
 from xml.dom.minidom import Document
 from ..alignment.align import Align
 from ..server import Base, Column, String, Text, ForeignKey, relationship, Float, FLOAT, DECIMAL
+from ezdxf.math import Vec2, Matrix44, Vector
 
 
 class Bridge(Base):
@@ -38,7 +39,8 @@ class Span(Base):
     __tablename__ = "span_tbl"
     name = Column("name", String(17), primary_key=True)
     _fAli_name = Column('align_name', String(10), ForeignKey("ei_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
-    _fBri_name = Column('bridge_name', String(10), ForeignKey("bridge_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
+    _fBri_name = Column('bridge_name', String(10),
+                        ForeignKey("bridge_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
     align = relationship("Align", foreign_keys=[_fAli_name], cascade='save-update,delete')
     bridge = relationship("Bridge", foreign_keys=[_fBri_name], cascade='save-update,delete')
 
@@ -137,6 +139,65 @@ class Span(Base):
             "hp_right": self.hp_right,
         }
         return json.dumps(dict)
+
+    def assign_found2(self, inst_name: str, fund_inst: Base,
+                      off_l: float = 0, off_w: float = 0, off_h: float = 0,
+                      angle_deg: float = 0):
+
+        self.foundation = fund_inst.copy()
+        self.foundation.Found_Inst.Name = inst_name
+        self.foundation.Found_Inst.RelatedSpan = self
+        for ii, pile in enumerate(self.foundation.PileList):
+            pile.Name = inst_name + "/PI%s" % str(ii + 1).zfill(2)
+        for ii, pc in enumerate(self.foundation.PileCapList):
+            pc.Name = inst_name + "/PC%s" % str(ii + 1).zfill(2)
+        span_cc = Vector(self.align.get_coordinate(self.station))
+        span_cc._z = self.align.get_ground_elevation(self.station, 0)
+        uux = Vector(self.align.get_direction(self.station))
+        uuy = uux.rotate_deg(90.0)
+        uuz = Vector(0, 0, 1)
+        trans_matrix = Matrix44.ucs(uux, uuy, uuz, span_cc)
+        self.foundation.transform(trans_matrix)
+        pass
+
+    def assign_found(self, inst_name: str, fund_inst: Base,
+                     off_l: float = 0, off_w: float = 0, off_h: float = 0,
+                     angle_deg: float = 0):
+        """
+        指定属于本处分跨线的基础结构实例.
+
+        Args:
+            inst_name: 基础编号.
+            fund_inst: 基础实例.
+            off_h: 竖向偏心, 默认值为 0 表示地面线下0.5m.
+            off_w: 横桥向偏心, 默认值为 0.
+            off_l: 顺桥向偏心, 默认值为 0.
+            angle_deg :基础相对于span平面的偏角, 默认值为 0, 逆时针为正.
+        Returns:
+
+        """
+        self.foundation = copy.deepcopy(fund_inst)
+        self.foundation.Name = inst_name
+        self.foundation.align = self.align
+        self.foundation.bridge = self.bridge
+        self.foundation.RelatedSpan = self
+        cc = Vec2(self.align.get_coordinate(self.station))
+        l_unit = Vec2(self.align.get_direction(self.station))
+        w_unit = l_unit.rotate_deg(90.0)
+        delta = off_l * l_unit + off_w * w_unit
+        new_cc = cc + delta
+        z0 = self.align.get_ground_elevation(self.station, 0) - 0.5 + off_h
+        x0 = new_cc.x
+        y0 = new_cc.y
+        ref_v = Vec2(self.align.get_direction(self.station))
+        ref_v = ref_v.rotate_deg(Angle.from_rad(self.angle).to_degrees() + angle_deg - 90.0)
+        ang2north = ref_v.angle_between(Vec2([0, 1]))
+        self.foundation.AngOfNorth = ang2north  # 弧度
+        self.foundation.X = x0
+        self.foundation.Y = y0
+        self.foundation.Z = z0
+
+        pass
 
     def assign_pier(self, name_inst: str, pier_inst: PierBase):
         """
@@ -325,8 +386,14 @@ class Model(object):
         session.commit()
         for sp in self.spans:
             session.add(sp)
-            if sp.pier != None:
+            if sp.pier is not None:
                 session.add(sp.pier)
+            if sp.foundation is not None:
+                session.add(sp.foundation.Found_Inst)
+                for pc in sp.foundation.PileCapList:
+                    session.add(pc)
+                for pile in sp.foundation.PileList:
+                    session.add(pile)
         session.commit()
 
 
