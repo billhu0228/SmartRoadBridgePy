@@ -50,13 +50,12 @@ PQX::PQX(std::wstring filepath) {
     }
     fid.close();
     std::wstringstream ss;
-    for(size_t i = 0; i < text.size(); ++i)
-    {
-        if(i != 0)
+    for (size_t i = 0; i < text.size(); ++i) {
+        if (i != 0)
             ss << L"\n";
         ss << text[i];
     }
-    PQX::ICDText= ss.str();
+    PQX::ICDText = ss.str();
 
     wstring line;
 
@@ -95,8 +94,8 @@ PQX::PQX(std::wstring filepath) {
                     case 1:
                         ll = stod(xx[1]);
                         // 补充考虑突变夹角
-                        if(xx.size()==3){
-                            cur_angle=stod(xx[2]);
+                        if (xx.size() == 3) {
+                            cur_angle = stod(xx[2]);
                         }
                         item = new Straight(ll, cur_point, cur_angle);
                         break;
@@ -105,8 +104,8 @@ PQX::PQX(std::wstring filepath) {
                         ll = stod(xx[2]);
                         lr_dir = LeftRightEnum(stoi(xx[3]));
                         // 补充考虑突变夹角
-                        if(xx.size()==5){
-                            cur_angle=stod(xx[4]);
+                        if (xx.size() == 5) {
+                            cur_angle = stod(xx[4]);
                         }
                         item = new Arc(rr, ll, cur_point, cur_angle, lr_dir);
                         break;
@@ -242,6 +241,18 @@ double PQX::get_station_by_point(double x0, double y0, int step, double delta) {
     return res[0].first;
 }
 
+
+double PQX::get_station_by_point2(double x0, double y0, double x1, double y1, double delta) {
+    Vector pt0 = Vector(x0, y0);
+    Vector pt1 = Vector(x1, y1);
+    double ret[2] = {start_pk, end_pk};
+    while (ret[1] - ret[0] > delta) {
+        __solve_coincidence(pt0, pt1, ret);
+    }
+    return (ret[0] + ret[1]) * 0.5;
+}
+
+
 int PQX::get_side(double x0, double y0) {
     double pk_center = get_station_by_point(x0, y0);
     Vector center = get_coordinate(pk_center);
@@ -251,10 +262,10 @@ int PQX::get_side(double x0, double y0) {
         return 0;
     } else {
         Angle ang = Angle(v_dir.angle_signed(v_cross));
-        if (ang.GetDegree() < 180) {
-            return -1;
-        } else {
+        if (ang.GetDegree() < 0) {
             return 1;
+        } else {
+            return -1;
         }
     }
     return 0;
@@ -284,6 +295,13 @@ void PQX::__solve_closer(const Vector &pt, double ret[3]) {
     }
 }
 
+
+/// 二分求解
+/// \param pk1
+/// \param pk2
+/// \param pt
+/// \param delta
+/// \param ret 返回值分别为最优解及误差.
 void PQX::__binary_test__(double pk1, double pk2, const Vector &pt, double delta, double ret[2]) {
     double mid = 0;
     double inputs[3] = {pk1, pk2, 0};
@@ -297,6 +315,42 @@ void PQX::__binary_test__(double pk1, double pk2, const Vector &pt, double delta
     __solve_closer(pt, inputs);
     ret[0] = res1;
     ret[1] = inputs[2];
+}
+
+
+/// 求解与pt0,pt1 共线的点.
+/// \param pt0
+/// \param pt1
+/// \param ret [k0,k1]
+void PQX::__solve_coincidence(const Vector &pt0, const Vector &pt1, double *ret) {
+    Vector dir = pt1 - pt0;
+    assert(ret[1] > ret[0]);
+    double km=(ret[0] + ret[1]) * 0.5;
+    Vector v0 = get_coordinate(ret[0]) - pt0;
+    Vector v1 = get_coordinate(ret[1]) - pt0;
+    Vector vm = get_coordinate(km) - pt0;
+    double ang0 = dir.angle_signed(v0);
+    double ang1 = dir.angle_signed(v1);
+    double ang_m = dir.angle_signed(vm);
+    if (ang0 * ang1 > 0) {
+        // 同向，反射
+        double dl = ret[1] - ret[0];
+        if (abs(ang0) < abs(ang1)) {
+            ret[1] = ret[0];
+            ret[0] = ret[0] - dl;
+        } else {
+            ret[0] = ret[1];
+            ret[1] = ret[1] + dl;
+        }
+
+    } else {
+        // 不同向，二分
+        if (ang0 * ang_m > 0) {
+            ret[0] = km;
+        } else {
+            ret[1] = km;
+        }
+    }
 }
 
 

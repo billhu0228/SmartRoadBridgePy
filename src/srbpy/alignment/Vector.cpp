@@ -53,9 +53,12 @@ double Vector::distance_point(const Vector &other) const {
     return ((*this) - other).length();
 }
 
+/// è¿”å›å¸¦ç¬¦å·çš„å¤¹è§’ï¼Œå€¼åŸŸä¸º(-pi,pi],è°ƒç”¨äº†atan2å‡½æ•°.
+/// \param other
+/// \return
 double Vector::angle_signed(const Vector &other) const {
     if (_z != 0 || other._z != 0) {
-        throw std::exception("¶ÁÈ¡ICDÎÄ¼ş´íÎó.");
+        throw std::exception("è¯»å–ICDæ–‡ä»¶é”™è¯¯.");
     }
     double dot = _x * other._x + _y * other._y;
     double det = _x * other._y - _y * other._x;
@@ -68,6 +71,6 @@ double &Vector::operator[](int i) {
     if (i == 0) { return _x; }
     else if (i == 1) { return _y; }
     else if (i == 2) { return _z; }
-    else { throw std::exception("%d ³¬¹ıË÷Òı³¤¶È.", i); }
+    else { throw std::exception("%d è¶…è¿‡ç´¢å¼•é•¿åº¦.", i); }
 
 }

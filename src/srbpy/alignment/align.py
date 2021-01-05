@@ -81,6 +81,24 @@ class Align(Base):
         """
         return self._pqx.get_station_by_point(x0, y0, step, delta)
 
+    def get_station_by_point2(self, x0: float, y0: float, x1: float, y1: float,
+                              delta: float = 1e-6) -> float:
+        """
+        根据两点获得两点所在直线与路线交点。
+
+        Args:
+            x0:(float): 点1 坐标X
+            y0:(float): 点1 坐标Y
+            x1:(float): 点2 坐标X
+            y1:(float): 点2 坐标Y
+            delta: 误差，default=1e-6.
+
+        Returns:
+            交点桩号.
+
+        """
+        return self._pqx.get_station_by_point2(x0, y0, x1, y1, delta)
+
     def get_direction(self, pk: float, delta: float = 1e-6):
         """
         获取前进方向向量。

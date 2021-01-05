@@ -59,6 +59,7 @@ PYBIND11_MODULE(align_pqx, m) {
             .def("get_coordinate", &PQX::get_coordinate)
             .def("get_dir", &PQX::get_dir)
             .def("get_station_by_point", &PQX::get_station_by_point)
+            .def("get_station_by_point2", &PQX::get_station_by_point2)
             .def("get_side", &PQX::get_side)
             .def("__binary_test__", &PQX::__binary_test__)
             .def_readonly("Text",& PQX::ICDText);

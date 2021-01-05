@@ -69,6 +69,50 @@ class Pile(Base):
         self.Z = v1.z
 
 
+class RectPileCap(Base):
+    __tablename__ = "RectPileCap_tbl"
+    Name = Column("name", String(17), primary_key=True)
+    _fFund_name = Column('found_name', String(17),
+                         ForeignKey("found_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
+    RelatedFoundation = relationship("GeneralFoundation", foreign_keys=[_fFund_name], cascade='save-update,delete')
+    X = Column('X', DECIMAL(15, 3), default=0.0)
+    Y = Column('Y', DECIMAL(15, 3), default=0.0)
+    Z = Column('Z', DECIMAL(15, 3), default=0.0)
+    AngOfNorth = Column('AngOfNorth', DECIMAL(15, 3), default=0.0)
+    W = Column('W', DECIMAL(15, 3), default=0.0)
+    L = Column('L', DECIMAL(15, 3), default=0.0)
+    H = Column('H', DECIMAL(15, 3), default=0.0)
+
+    def __init__(self, xx: float, yy: float, zz: float,
+                 length: float, width: float, height: float,
+                 **kwargs):
+        """
+        适用于一切矩形桩基承台，也适用于地系梁。
+
+        Args:
+            xx: 承台顶面型心 x
+            yy: 承台顶面型心 y
+            zz: 承台顶面型心 z
+            length:
+            width:
+            height:
+            **kwargs:
+        """
+        self.X = xx
+        self.Y = yy
+        self.Z = zz
+        self.L = length
+        self.W = width
+        self.H = height
+
+    def transform(self, mat: Matrix44):
+        v0 = Vector(self.X, self.Y, self.Z)
+        v1 = mat.transform(v0)
+        self.X = v1.x
+        self.Y = v1.y
+        self.Z = v1.z
+
+
 class RectPileFoundation(object):
     PileCapList = []
     PileList = []
@@ -135,47 +179,3 @@ class RectPileFoundation(object):
         for pc in m1.PileCapList:
             pc.RelatedFoundation = m1.Found_Inst
         return m1
-
-
-class RectPileCap(Base):
-    __tablename__ = "RectPileCap_tbl"
-    Name = Column("name", String(17), primary_key=True)
-    _fFund_name = Column('found_name', String(17),
-                         ForeignKey("found_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
-    RelatedFoundation = relationship("GeneralFoundation", foreign_keys=[_fFund_name], cascade='save-update,delete')
-    X = Column('X', DECIMAL(15, 3), default=0.0)
-    Y = Column('Y', DECIMAL(15, 3), default=0.0)
-    Z = Column('Z', DECIMAL(15, 3), default=0.0)
-    AngOfNorth = Column('AngOfNorth', DECIMAL(15, 3), default=0.0)
-    W = Column('W', DECIMAL(15, 3), default=0.0)
-    L = Column('L', DECIMAL(15, 3), default=0.0)
-    H = Column('H', DECIMAL(15, 3), default=0.0)
-
-    def __init__(self, xx: float, yy: float, zz: float,
-                 length: float, width: float, height: float,
-                 **kwargs):
-        """
-        适用于一切矩形桩基承台，也适用于地系梁。
-
-        Args:
-            xx: 承台顶面型心 x
-            yy: 承台顶面型心 y
-            zz: 承台顶面型心 z
-            length:
-            width:
-            height:
-            **kwargs:
-        """
-        self.X = xx
-        self.Y = yy
-        self.Z = zz
-        self.L = length
-        self.W = width
-        self.H = height
-
-    def transform(self, mat: Matrix44):
-        v0 = Vector(self.X, self.Y, self.Z)
-        v1 = mat.transform(v0)
-        self.X = v1.x
-        self.Y = v1.y
-        self.Z = v1.z

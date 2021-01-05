@@ -9,11 +9,11 @@ from PyAngle import Angle
 from numpy import loadtxt, pi
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
-from ..stdlib.std_piers import PierBase
 from xml.dom.minidom import Document
 from ..alignment.align import Align
 from ..server import Base, Column, String, Text, ForeignKey, relationship, Float, FLOAT, DECIMAL
 from ezdxf.math import Vec2, Matrix44, Vector
+from ..stdlib.supstructures import CIPBoxPoints
 
 
 class Bridge(Base):
@@ -21,17 +21,61 @@ class Bridge(Base):
     name = Column('name', String(10), primary_key=True)
     _f_ali_name = Column('align_name', String(10), ForeignKey("ei_tbl.name", ondelete='CASCADE', onupdate='CASCADE'))
     _f_title_name = Column('title_name', String(120), nullable=True)
-    _align_related = relationship("Align", foreign_keys=[_f_ali_name], cascade='save-update,delete')
+    RelatedAlign = relationship("Align", foreign_keys=[_f_ali_name], cascade='save-update,delete')
 
     def __init__(self, name: str, al: Align):
         self.name = name
-        self._align_related = al
+        self.RelatedAlign = al
+        self.spanlist = []
+        self.ciplist = []
 
     def set_title(self, title: str):
         self._f_title_name = title
 
     def serialize(self):
         return json.dumps({"name": self.name})
+
+    def assign_sup(self, inst_name: str, inst: Base, spans: list, st_pk: float, end_pk: float, steps=0.1):
+        """
+        指定上部结构.
+
+        Args:
+            inst_name:
+            inst:
+            spans:
+            st_pk:
+            end_pk:
+            steps: 现浇梁线段步长
+
+        Returns:
+
+        """
+        sup_inst = inst.copy()
+        sup_inst.Name = inst_name
+        sup_inst.start_pk = st_pk
+        sup_inst.end_pk = end_pk
+        sup_inst.RelatedAlign = self.RelatedAlign
+        sup_inst.RelatedBridge = self
+        for ii, sp in enumerate(spans):
+            setattr(sup_inst, "RelatedSpan%i" % ii, sp)
+        # 补充KP
+        npts = int((end_pk - st_pk) / steps) + 1
+        sideL = ((end_pk - st_pk) - (npts - 3) * steps) * 0.5
+        for i in range(npts):
+            if i == 0:
+                dx = st_pk
+            elif i == npts - 1:
+                dx = end_pk
+            else:
+                dx = st_pk + sideL + (i - 1) * steps
+            x0, y0 = sup_inst.RelatedAlign.get_coordinate(dx)
+            z0 = sup_inst.RelatedAlign.get_elevation(dx)
+            KP = CIPBoxPoints(i, float(x0), float(y0), float(z0))
+            KP.SetRelatedCIPBox(sup_inst)
+            sup_inst.KeyPointsList.append(KP)
+        #
+        self.ciplist.append(sup_inst)
+        pass
 
 
 class Span(Base):
@@ -98,7 +142,7 @@ class Span(Base):
         self.pier = None  # 增加结构指定
 
     def __str__(self):
-        return self._fName
+        return self.name
 
     def __eq__(self, other):
         if isinstance(other, Span):
@@ -140,10 +184,32 @@ class Span(Base):
         }
         return json.dumps(dict)
 
-    def assign_found2(self, inst_name: str, fund_inst: Base,
-                      off_l: float = 0, off_w: float = 0, off_h: float = 0,
-                      angle_deg: float = 0):
+    def assign_substructure(self, inst_name: str, sub_inst: Base):
+        """
+        向S附加下部结构
+        Args:
+            inst_name: 主键
+            sub_inst: 实例
 
+        Returns:
+
+        """
+        self.pier = sub_inst.copy()
+        self.pier.Sub_Inst.Name = inst_name
+        self.pier.Sub_Inst.RelatedSpan = self
+        for ii, col in enumerate(self.pier.ColumnList):
+            col.Name = inst_name + "/COL%s" % str(ii + 1).zfill(2)
+        self.pier.CapBeam_Inst.Name = inst_name + "/CB01"
+        span_cc = Vector(self.align.get_coordinate(self.station))
+        span_cc._z = self.align.get_ground_elevation(self.station, 0)
+        uux = Vector(self.align.get_direction(self.station))
+        uuy = uux.rotate_deg(90.0)
+        uuz = Vector(0, 0, 1)
+        trans_matrix = Matrix44.ucs(uux, uuy, uuz, span_cc)
+        self.pier.transform(trans_matrix)
+        pass
+
+    def assign_found2(self, inst_name: str, fund_inst: Base):
         self.foundation = fund_inst.copy()
         self.foundation.Found_Inst.Name = inst_name
         self.foundation.Found_Inst.RelatedSpan = self
@@ -199,27 +265,29 @@ class Span(Base):
 
         pass
 
-    def assign_pier(self, name_inst: str, pier_inst: PierBase):
-        """
-        指定属于本处分跨线的桥墩结构实例.
-
-        Args:
-            name: 桥墩编号.
-            pier_inst: 桥墩实例.
-
-        Returns:
-
-        """
-        self.pier = copy.deepcopy(pier_inst)
-        self.pier._fName = name_inst
-        self.pier.align = self.align
-        self.pier.bridge = self.bridge
-        self.pier.span = self
-        self.pier._fStation = self._fStation
-        self.pier._fAngle = self._fAngle
-        self.pier._fSlopeLeft = self._fHPL
-        self.pier._fSlopeRight = self._fHPR
+    def make_happy(self):
         pass
+    # def assign_pier(self, name_inst: str, pier_inst: PierBase):
+    #     """
+    #     指定属于本处分跨线的桥墩结构实例.
+    #
+    #     Args:
+    #         name: 桥墩编号.
+    #         pier_inst: 桥墩实例.
+    #
+    #     Returns:
+    #
+    #     """
+    #     self.pier = copy.deepcopy(pier_inst)
+    #     self.pier._fName = name_inst
+    #     self.pier.align = self.align
+    #     self.pier.bridge = self.bridge
+    #     self.pier.span = self
+    #     self.pier._fStation = self._fStation
+    #     self.pier._fAngle = self._fAngle
+    #     self.pier._fSlopeLeft = self._fHPL
+    #     self.pier._fSlopeRight = self._fHPR
+    #     pass
 
 
 class SpanCollection(list):
@@ -304,6 +372,7 @@ class Model(object):
         try:
             self.spans.append(spa)
             self.spans.sort()
+            spa.bridge.spanlist.append(spa)
             return 0
         except Exception as e:
             print(e)
@@ -387,13 +456,22 @@ class Model(object):
         for sp in self.spans:
             session.add(sp)
             if sp.pier is not None:
-                session.add(sp.pier)
+                session.add(sp.pier.Sub_Inst)  # 添加下部结点
+                session.add(sp.pier.CapBeam_Inst)  # 添加下部盖梁
+                for col in sp.pier.ColumnList:  # 添加墩柱
+                    session.add(col)
             if sp.foundation is not None:
                 session.add(sp.foundation.Found_Inst)
                 for pc in sp.foundation.PileCapList:
                     session.add(pc)
                 for pile in sp.foundation.PileList:
                     session.add(pile)
+        session.commit()
+        for br in self.bridges.keys():
+            for cip in self.bridges[br].ciplist:
+                session.add(cip)
+                for kp in cip.KeyPointsList:
+                    session.add(kp)
         session.commit()
 
 

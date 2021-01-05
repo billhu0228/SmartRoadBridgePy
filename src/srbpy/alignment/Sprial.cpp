@@ -120,7 +120,7 @@ int Sprial::eval_xy(double R_st, double A, double l, int idd, double* xy)
             pow(l, 15) / (9676800 * pow(A, 14));
     }
     else {
-        throw exception("缓和曲线类型错误.");
+        throw exception("缂撳拰鏇茬嚎绫诲瀷閿欒.");
     }
 
     if (xy == NULL)
