@@ -1,5 +1,5 @@
 from PyAngle import Angle
-from ezdxf.drawing import Drawing
+from ezdxf.document import Drawing
 from ezdxf.math import ConstructionLine, Vec2, ConstructionArc, ConstructionCircle
 from skspatial.objects import Vector
 from numpy import sqrt, arctan2, pi

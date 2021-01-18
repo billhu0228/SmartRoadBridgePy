@@ -129,6 +129,7 @@ class Span(Base):
         self.pier = None
         self.foundation = None
         self.mj = None
+        self.bearings = []
         # 增加ORM映射 -- Bill 2020/11/18
         result = ("%.3f" % (float(Decimal(station).quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)))).zfill(9)
         self.name = align.name + "+" + result
@@ -200,8 +201,9 @@ class Span(Base):
         for ii, col in enumerate(self.pier.ColumnList):
             col.Name = inst_name + "/COL%s" % str(ii + 1).zfill(2)
         self.pier.CapBeam_Inst.Name = inst_name + "/CB01"
-        span_cc = Vector(self.align.get_coordinate(self.station))
-        span_cc._z = self.align.get_ground_elevation(self.station, 0)
+        xyz = self.align.get_coordinate(self.station)
+        xyz.append(self.align.get_ground_elevation(self.station, 0))
+        span_cc = Vector(xyz)
         uux = Vector(self.align.get_direction(self.station))
         uuy = uux.rotate_deg(90.0)
         uuz = Vector(0, 0, 1)
@@ -217,8 +219,9 @@ class Span(Base):
             pile.Name = inst_name + "/PI%s" % str(ii + 1).zfill(2)
         for ii, pc in enumerate(self.foundation.PileCapList):
             pc.Name = inst_name + "/PC%s" % str(ii + 1).zfill(2)
-        span_cc = Vector(self.align.get_coordinate(self.station))
-        span_cc._z = self.align.get_ground_elevation(self.station, 0)
+        xyz = self.align.get_coordinate(self.station)
+        xyz.append(self.align.get_ground_elevation(self.station, 0))
+        span_cc = Vector(xyz)
         uux = Vector(self.align.get_direction(self.station))
         uuy = uux.rotate_deg(90.0)
         uuz = Vector(0, 0, 1)
@@ -264,6 +267,42 @@ class Span(Base):
         self.foundation.Z = z0
 
         pass
+
+    def assign_bearing(self, inst_name: str, br_inst: Base, offset=None):
+        """
+
+        Args:
+            inst_name:
+            br_inst:
+            offset:
+
+        Returns:
+
+        """
+
+        if offset is None:
+            offset = [0, 0]
+        br_cp = br_inst.copy()
+
+        br_cp.Name = inst_name
+        br_cp.RelatedSpan = self
+        bk_supper = None  # 后排上部
+        ft_supper = None  # 前排上部
+        supper = None
+        for cip in self.bridge.ciplist:
+            for ii, sp in enumerate(cip.span_list()):
+                if sp.name == self.name:
+                    if ii == 0:
+                        ft_supper = cip
+                    elif ii == len(cip.span_list()) - 1:
+                        bk_supper = cip
+                    else:
+                        supper = cip
+
+        xyz = self.align.get_coordinate(self.station)
+
+        xyz.append()
+        span_cc = Vector(xyz)
 
     def make_happy(self):
         pass

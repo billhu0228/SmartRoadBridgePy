@@ -122,7 +122,7 @@ class Align(Base):
             pk (float): 里程桩号
 
         Returns:
-            (float,float): 大地坐标。
+            [float,float]: 大地坐标。
 
         """
 

@@ -73,3 +73,7 @@ class CIPBox(Base):
         m1 = copy.deepcopy(self)
         m1.KeyPointsList = []
         return m1
+
+    def span_list(self):
+        return [self._fSpan0, self._fSpan1, self._fSpan2, self._fSpan3, self._fSpan4, self._fSpan5, self._fSpan6,
+                self._fSpan7, ]

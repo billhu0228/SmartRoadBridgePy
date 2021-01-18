@@ -1,6 +1,7 @@
 import os
 import platform
 import re
+
 import setuptools
 import subprocess
 import sys
@@ -10,13 +11,13 @@ import sysconfig
 from distutils.version import LooseVersion
 from setuptools.command.build_ext import build_ext
 
-with open("README.md", "r",encoding="utf-8") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 
 class CMakeExtension(setuptools.Extension):
-    def __init__(self, name, cmake_dir):
-        setuptools.Extension.__init__(self, name, sources=[])
+    def __init__(self, name, cmake_dir, api):
+        setuptools.Extension.__init__(self, name, sources=[], py_limited_api=api)
         self.cmake_dir = os.path.abspath(cmake_dir)
 
 
@@ -38,7 +39,7 @@ class CMakeBuild(build_ext):
 
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-        #extdir = ext.cmake_dir
+        # extdir = ext.cmake_dir
         cmake_args = []
         cmake_args += ["-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + extdir,
                        "-DPYTHON_EXECUTABLE=" + sys.executable]
@@ -71,9 +72,9 @@ class CMakeBuild(build_ext):
             shutil.rmtree(self.build_temp)
         print()
 
-
+# 016
 setuptools.setup(name="srbpy",
-                 version="0.1.5",
+                 version="0.1.6",
                  description="A Python/C++ Mixed Road Bridge Design Package",
                  url="https://github.com/billhu0228/SmartRoadBridgePy",
                  author="Bill Hu",
@@ -85,14 +86,13 @@ setuptools.setup(name="srbpy",
                  packages=setuptools.find_packages("src"),
                  package_dir={"": "src"},
                  ext_modules=[
-                     CMakeExtension("srbpy/alignment/useless", cmake_dir="src/srbpy/alignment"),
-                     CMakeExtension("srbpy/public/useless", cmake_dir="src/srbpy/public"),
+                     CMakeExtension("srbpy/alignment/useless", cmake_dir="src/srbpy/alignment",api=False),
+                     CMakeExtension("srbpy/public/useless", cmake_dir="src/srbpy/public", api=False),
                  ],
                  cmdclass=dict(build_ext=CMakeBuild),
                  classifiers=[
                      "Development Status :: 3 - Alpha",
                      "Intended Audience :: Developers",
-                     #'Topic :: Road and Bridge :: Alignment',
                      "Programming Language :: Python :: 3",
                      "License :: OSI Approved :: MIT License",
                      "Operating System :: OS Independent",
@@ -100,7 +100,7 @@ setuptools.setup(name="srbpy",
                  keywords="civil road bridge alignment",
                  project_urls={
                      'Source': 'https://github.com/billhu0228/SmartRoadBridgePy',
-                               },
+                 },
                  py_modules=[],
                  install_requires=[
                      'numpy',
@@ -108,6 +108,7 @@ setuptools.setup(name="srbpy",
                      'PyAngle>=2.2.0',
                      'pybind11>=2.6.0',
                      'SQLAlchemy>=1.3',
+                     'ezdxf>=0.13',
                  ],
                  python_requires=">=3",
                  # data_files=[],
