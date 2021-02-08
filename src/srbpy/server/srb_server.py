@@ -1,3 +1,4 @@
+# -*- coding : utf-8-*-
 import io
 import socket
 from srbpy.model import Model, Bridge

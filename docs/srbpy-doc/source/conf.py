@@ -21,7 +21,7 @@ copyright = '2020, bill'
 author = 'bill'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '0.1.17'
 
 # -- General configuration ---------------------------------------------------
 

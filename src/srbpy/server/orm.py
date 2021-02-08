@@ -1,3 +1,4 @@
+# -*- coding : utf-8-*-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Table, MetaData, Text, FLOAT, DECIMAL
 from sqlalchemy.orm import relationship

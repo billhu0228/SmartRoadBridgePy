@@ -74,7 +74,7 @@ class CMakeBuild(build_ext):
 
 # 016
 setuptools.setup(name="srbpy",
-                 version="0.1.6",
+                 version="0.1.7",
                  description="A Python/C++ Mixed Road Bridge Design Package",
                  url="https://github.com/billhu0228/SmartRoadBridgePy",
                  author="Bill Hu",

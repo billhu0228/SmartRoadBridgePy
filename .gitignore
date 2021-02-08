@@ -177,3 +177,4 @@ Debug/
 /lib/pybind11/tests/
 /lib/pybind11/.github/
 /lib/pybind11/docs/
+/tests/CheckUTF8.py

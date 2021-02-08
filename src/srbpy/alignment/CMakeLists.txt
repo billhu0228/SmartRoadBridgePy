@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.19)
 project(srbpy)
 
 # Set include directories
@@ -29,7 +29,8 @@ set(SOURCES
 add_subdirectory(${ROOT}/lib/pybind11 pybind11_dir)
 pybind11_add_module(align_pqx ${SOURCES})
 
-find_package(PythonLibs REQUIRED)
+#find_package(PythonLibs 3 REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development)
 
 include_directories(
     ${PYTHON_INCLUDE_DIRS}

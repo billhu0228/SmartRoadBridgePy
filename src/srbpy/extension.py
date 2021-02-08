@@ -1,3 +1,4 @@
+# -*- coding : utf-8-*-
 from PyAngle import Angle
 from ezdxf.document import Drawing
 from ezdxf.math import ConstructionLine, Vec2, ConstructionArc, ConstructionCircle

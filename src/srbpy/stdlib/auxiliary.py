@@ -1,3 +1,4 @@
+# -*- coding : utf-8-*-
 import copy
 
 from ..server import Base, Column, String, Text, ForeignKey, relationship, Float, FLOAT, DECIMAL, Integer

@@ -53,6 +53,7 @@ class CG(object):
                 ls = (self.get_hp(pk + 0.000001)[0] + self.get_hp(pk - 0.000001)[0]) * 0.5
                 rs = (self.get_hp(pk + 0.000001)[1] + self.get_hp(pk - 0.000001)[1]) * 0.5
                 res = [ls, rs]
+            return res[0], res[1]
         else:
             tmp = copy.deepcopy(self.__CGDList)
             pt = CGD(pk, 0, 0)
