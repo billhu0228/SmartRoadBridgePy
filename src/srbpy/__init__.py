@@ -41,11 +41,8 @@ Align 类还支持根据坐标反查最近的正交桩号（可能有多解）�
 """
 
 
-# from .align_pqx import *
-#
-# from .alignment import *
-# # Standard python imports
-# from .hello_world_python import *
+
+
 
 # Remove dunders
 from .alignment import *
@@ -53,5 +50,37 @@ from .model import *
 from .stdlib import *
 from .server import *
 
+
 __all__ = [f for f in dir() if not f.startswith("_")]
 
+import requests
+import json
+try:
+    from packaging.version import parse
+except ImportError:
+    from pip._vendor.packaging.version import parse
+
+def get_version():
+    """Return version of package on pypi.python.org using json."""
+    URL_PATTERN = 'https://pypi.python.org/pypi/Srbpy/json'
+    req = requests.get(URL_PATTERN)
+    version = parse('0')
+    if req.status_code == requests.codes.ok:
+        try:
+            j = json.loads(req.text.encode(req.encoding))
+        except:
+            j=json.loads(req.text.encode('utf-8'))
+        releases = j.get('releases', [])
+        for release in releases:
+            ver = parse(release)
+            if not ver.is_prerelease:
+                version = max(version, ver)
+    return version
+
+import pkg_resources  # part of setuptools
+
+version = pkg_resources.require("Srbpy")[0].version
+version_online = get_version()
+
+if version != version_online:
+    print("\nSrbpy当前版本(%s)，请更新最新版（%s）."%(version,version_online))

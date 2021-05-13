@@ -8,6 +8,7 @@ class CG(object):
     def __init__(self, file=""):
         self.__CGDList = []
         is_read_first = False
+        self.axi_loc = 0.0  # 超高旋转轴
         with open(file, 'r') as fid:
             text = fid.readlines()
         for i, line in enumerate(text):
@@ -20,10 +21,10 @@ class CG(object):
                 self.__dtr = float(xx[2])
                 self.__isSlop = float(xx[3])
                 self.__jd1 = int(xx[4])
-                self.__axi = float(xx[5])
+                self.axi_loc = float(xx[5])
                 self.__jd2 = int(xx[6])
                 is_read_first = True
-                if self.__axi != 0 or self.__jd2 != 2:
+                if self.__jd2 != 2:
                     raise Exception("超高数据类型超过已知.")
             else:
                 pt = CGD(0, 0, 0)

@@ -179,7 +179,12 @@ class Align(Base):
         dist_new = self.get_side(pt[0], pt[1]) * pt.distance(center_new)
         ele_new = self.get_elevation(pk_new)
         hp = self.get_cross_slope(pk_new)[0] if self.get_side(pt[0], pt[1]) < 0 else self.get_cross_slope(pk_new)[1]
-        return ele_new + dist_new * hp
+        # 增加超高旋转轴定义 -- 20210412
+        if abs(dist_new) <= self._cg.axi_loc:
+            return ele_new
+        else:
+            return ele_new + dist_new / abs(dist_new) * (abs(dist_new) - self._cg.axi_loc) * hp
+        # 增加超高旋转轴定义 -- 20210412
 
     def get_ground_elevation(self, pk: float, dist: float) -> float:
         """
