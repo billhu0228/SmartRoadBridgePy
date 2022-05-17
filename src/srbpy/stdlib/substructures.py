@@ -4,7 +4,7 @@ import copy
 from ..server import Base, Column, String, Text, ForeignKey, relationship, Float, FLOAT, DECIMAL, Integer
 # from ..alignment.align import Align
 # from ..model import Bridge, Span
-from ezdxf.math import Vec2, Matrix44, Vector
+from ezdxf.math import Vec2, Matrix44, Vec3
 
 
 class std_Piers():
@@ -76,7 +76,7 @@ class PierColumn(Base):
         pass
 
     def transform(self, mat: Matrix44):
-        v0 = Vector(self.X, self.Y, self.Z)
+        v0 = Vec3(self.X, self.Y, self.Z)
         v1 = mat.transform(v0)
         self.X = v1.x
         self.Y = v1.y
@@ -126,7 +126,7 @@ class CapBeam(Base):
         self.HP = cross_slope
 
     def transform(self, mat: Matrix44):
-        v0 = Vector(self.X, self.Y, self.Z)
+        v0 = Vec3(self.X, self.Y, self.Z)
         v1 = mat.transform(v0)
         self.X = v1.x
         self.Y = v1.y

@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 import ezdxf
 from PyAngle import Angle
 from numpy import pi, cos, sin
-from ezdxf.math import Vector, Vec2
+from ezdxf.math import Vec2, Vec3
 
 from .align_cg import CG
 from .align_dmx import DMX
@@ -276,9 +276,9 @@ class Align(Base):
             if self._width_dxf == "":
                 raise Exception("未定义任何宽度信息.")
             else:
-                cc = Vector(*self.get_coordinate(pk))
-                left = cc + Vector(*self.get_direction(pk)).rotate(angle) * 100.0
-                right = cc + Vector(*self.get_direction(pk)).rotate(angle) * -100.0
+                cc = Vec3(*self.get_coordinate(pk))
+                left = cc + Vec3(*self.get_direction(pk)).rotate(angle) * 100.0
+                right = cc + Vec3(*self.get_direction(pk)).rotate(angle) * -100.0
                 lw, vecL = cut_dxf(self._width_dxf, cc, left)
                 rw, vecR = cut_dxf(self._width_dxf, cc, right)
                 if isinstance(lw, float) and isinstance(rw, float):
@@ -330,9 +330,9 @@ class Align(Base):
             if self._width_dxf == "":
                 raise Exception("未定义任何宽度信息.")
             else:
-                cc = Vector(*self.get_coordinate(pk))
-                left = cc + Vector(*self.get_direction(pk)).rotate(angle) * 100.0
-                right = cc + Vector(*self.get_direction(pk)).rotate(angle) * -100.0
+                cc = Vec3(*self.get_coordinate(pk))
+                left = cc + Vec3(*self.get_direction(pk)).rotate(angle) * 100.0
+                right = cc + Vec3(*self.get_direction(pk)).rotate(angle) * -100.0
                 lw, ptl = cut_dxf(self._width_dxf, cc, left)
                 rw, ptr = cut_dxf(self._width_dxf, cc, right)
                 if isinstance(lw, float) and isinstance(rw, float):

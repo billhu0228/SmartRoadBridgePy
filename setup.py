@@ -31,8 +31,7 @@ class CMakeBuild(build_ext):
                 ", ".join(e.name for e in self.extensions))
 
         if platform.system() == "Windows":
-            cmake_version = LooseVersion(re.search(r"version\s*([\d.]+)",
-                                                   out.decode()).group(1))
+            cmake_version = LooseVersion(re.search(r"version\s*([\d.]+)", out.decode()).group(1))
 
         for ext in self.extensions:
             self.build_extension(ext)
@@ -63,8 +62,7 @@ class CMakeBuild(build_ext):
             os.makedirs(self.build_temp)
 
         print(" ".join(e for e in ["cmake", ext.cmake_dir] + cmake_args))
-        subprocess.check_call(["cmake", ext.cmake_dir] + cmake_args,
-                              cwd=self.build_temp, env=env)
+        subprocess.check_call(["cmake", ext.cmake_dir] + cmake_args, cwd=self.build_temp, env=env)
 
         subprocess.check_call(["cmake", "--build", "."] +
                               build_args, cwd=self.build_temp)
@@ -72,9 +70,10 @@ class CMakeBuild(build_ext):
             shutil.rmtree(self.build_temp)
         print()
 
+
 # 016
 setuptools.setup(name="srbpy",
-                 version="0.2.0",
+                 version="0.2.1",
                  description="A Python/C++ Mixed Road Bridge Design Package",
                  url="https://github.com/billhu0228/SmartRoadBridgePy",
                  author="Bill Hu",
@@ -86,14 +85,17 @@ setuptools.setup(name="srbpy",
                  packages=setuptools.find_packages("src"),
                  package_dir={"": "src"},
                  ext_modules=[
-                     CMakeExtension("srbpy/alignment/useless", cmake_dir="src/srbpy/alignment",api=False),
+                     CMakeExtension("srbpy/alignment/useless", cmake_dir="src/srbpy/alignment", api=False),
                      CMakeExtension("srbpy/public/useless", cmake_dir="src/srbpy/public", api=False),
                  ],
                  cmdclass=dict(build_ext=CMakeBuild),
                  classifiers=[
                      "Development Status :: 3 - Alpha",
                      "Intended Audience :: Developers",
-                     "Programming Language :: Python :: 3",
+                     'Programming Language :: Python :: 3.7',
+                     'Programming Language :: Python :: 3.8',
+                     'Programming Language :: Python :: 3.9',
+                     'Programming Language :: Python :: 3.10',
                      "License :: OSI Approved :: MIT License",
                      "Operating System :: OS Independent",
                  ],
@@ -108,7 +110,8 @@ setuptools.setup(name="srbpy",
                      'PyAngle>=2.2.0',
                      'pybind11>=2.6.0',
                      'SQLAlchemy>=1.3',
-                     'ezdxf>=0.13',
+                     'ezdxf>=0.17',
+                     'requests>=2.27',
                  ],
                  python_requires=">=3",
                  # data_files=[],

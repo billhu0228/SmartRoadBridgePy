@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from xml.dom.minidom import Document
 from ..alignment.align import Align
 from ..server import Base, Column, String, Text, ForeignKey, relationship, Float, FLOAT, DECIMAL
-from ezdxf.math import Vec2, Matrix44, Vector
+from ezdxf.math import Vec2, Matrix44, Vec3
 from ..stdlib.supstructures import CIPBoxPoints
 
 
@@ -204,10 +204,10 @@ class Span(Base):
         self.pier.CapBeam_Inst.Name = inst_name + "/CB01"
         xyz = self.align.get_coordinate(self.station)
         xyz.append(self.align.get_ground_elevation(self.station, 0))
-        span_cc = Vector(xyz)
-        uux = Vector(self.align.get_direction(self.station))
+        span_cc = Vec3(xyz)
+        uux = Vec3(self.align.get_direction(self.station))
         uuy = uux.rotate_deg(90.0)
-        uuz = Vector(0, 0, 1)
+        uuz = Vec3(0, 0, 1)
         trans_matrix = Matrix44.ucs(uux, uuy, uuz, span_cc)
         self.pier.transform(trans_matrix)
         pass
@@ -222,10 +222,10 @@ class Span(Base):
             pc.Name = inst_name + "/PC%s" % str(ii + 1).zfill(2)
         xyz = self.align.get_coordinate(self.station)
         xyz.append(self.align.get_ground_elevation(self.station, 0))
-        span_cc = Vector(xyz)
-        uux = Vector(self.align.get_direction(self.station))
+        span_cc = Vec3(xyz)
+        uux = Vec3(self.align.get_direction(self.station))
         uuy = uux.rotate_deg(90.0)
-        uuz = Vector(0, 0, 1)
+        uuz = Vec3(0, 0, 1)
         trans_matrix = Matrix44.ucs(uux, uuy, uuz, span_cc)
         self.foundation.transform(trans_matrix)
         pass
@@ -303,7 +303,7 @@ class Span(Base):
         xyz = self.align.get_coordinate(self.station)
 
         xyz.append()
-        span_cc = Vector(xyz)
+        span_cc = Vec3(xyz)
 
     def make_happy(self):
         pass

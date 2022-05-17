@@ -2,7 +2,7 @@
 import copy
 
 from ..server import Base, Column, String, Text, ForeignKey, relationship, Float, FLOAT, DECIMAL, Integer
-from ezdxf.math import Vec2, Matrix44, Vector
+from ezdxf.math import Vec2, Matrix44, Vec3
 
 
 class std_Joint(object):

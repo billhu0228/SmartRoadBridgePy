@@ -10,7 +10,7 @@ set(ROOT "../../..")
 # Tell CMake that headers are also in SOURCE_DIR
 include_directories(${SOURCE_DIR})
 
-set(Boost_INCLUDE_DIR C:/Boost/include/boost-1_74)
+set(Boost_INCLUDE_DIR D:/Repo/boost_1_79_0/boost_1_79_0)
 include_directories(${Boost_INCLUDE_DIR})
 
 set(SOURCES
