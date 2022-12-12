@@ -14,11 +14,11 @@ public:
 
     Vector(double x, double y, double z);
 
-    double X(void);
+    double X() const;
 
-    double Y(void);
+    double Y() const;
 
-    double Z(void);
+    double Z() const;
 
     Vector rotate2d(const Angle &a);
 

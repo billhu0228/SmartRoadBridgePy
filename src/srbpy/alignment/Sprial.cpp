@@ -1,19 +1,17 @@
 #include "Sprial.h"
 #include <set>
+
 using namespace std;
 
 
-
-Sprial::Sprial(void)
-{
+Sprial::Sprial(void) {
     __a = 0;
     __start_radius = 0;
     __end_radius = 0;
 }
 
-Sprial::Sprial(EITypeID idd, double a, double sr, double er, Vector& st, Angle& sa, LeftRightEnum direnum)
-    :PQXElement(idd, st, sa, direnum)
-{
+Sprial::Sprial(EITypeID idd, double a, double sr, double er, Vector &st, Angle &sa, LeftRightEnum direnum)
+        : PQXElement(idd, st, sa, direnum) {
     __a = a;
     __start_radius = sr;
     __end_radius = er;
@@ -25,43 +23,57 @@ Sprial::Sprial(EITypeID idd, double a, double sr, double er, Vector& st, Angle& 
 //    return abs(__a * __a / __start_radius - __a * __a / __end_radius);
 //}
 
-double Sprial::__ab__(double value, int i, int j, int k, int ll)
-{
+double Sprial::__ab__(double value, int i, int j, int k, int ll) {
     double rho_a = 1.0 / __start_radius;
     double rho_b = 1.0 / __end_radius;
     double const_a = rho_a;
     double const_b = (rho_b - rho_a) / (2.0 * length());
-    return pow(const_a, i) * pow(const_b, j) / (double)k * pow(value, ll);
+    return pow(const_a, i) * pow(const_b, j) / (double) k * pow(value, ll);
 }
 
 
-Angle Sprial::end_angle() const
-{
-    Angle ang = Angle(0.5 * __a * __a * abs(1.0 / (__start_radius * __start_radius) - 1.0 / (__end_radius * __end_radius)));
-    return ang * (double)left_right + start_angle;
+Angle Sprial::end_angle() const {
+    Angle ang = Angle(
+            0.5 * __a * __a * abs(1.0 / (__start_radius * __start_radius) - 1.0 / (__end_radius * __end_radius)));
+    return ang * (double) left_right + start_angle;
 }
 
-Vector Sprial::get_point_on_curve(double l_from_st) const
-{
+Vector Sprial::get_point_on_curve(double l_from_st) const {
     double x0, y0;
-    double *xy=new double[2];
-    eval_xy(__start_radius, __a, l_from_st, (int)TypeId,xy);
-
+    double *xy = new double[2];
+    if ((int) TypeId != 5) {
+        eval_xy(__start_radius, __a, l_from_st, (int) TypeId, xy);
+    } else {
+        Vector cur_point = Vector(start_point.X(), start_point.Y());
+        Angle cur_angle = Angle(Degree(start_angle.GetDegree() + 180.0));
+        Sprial L1 = Sprial(EITypeID(4), __a, __start_radius, 1e39, cur_point, cur_angle,
+                           LeftRightEnum(-1 * (double) left_right));
+        Vector real_start = L1.end_point();
+        double real_l_from_st = L1.length() + l_from_st;
+        Angle real_st_angle = Angle(Degree(L1.end_angle().GetDegree() + 180.0));
+        Sprial real_curve = Sprial(EITypeID(3), __a, 1e39, __end_radius, real_start, real_st_angle,
+                                   LeftRightEnum((double) left_right));
+        return real_curve.get_point_on_curve(real_l_from_st);
+        // double f0 = xy[0];
+        // double f1 = xy[1];
+        // real_curve.end_point()
+        // Vector res2 = Vector(f1, f0).rotate2d(real_st_angle * -1);
+        // Vector ret = real_start + res2;
+        // double test = 1;
+        // eval_xy(__start_radius, __a, l_from_st, (int) TypeId, xy);
+    }
     x0 = xy[0];
     y0 = xy[1];
-    y0 *= (double)left_right;
+    y0 *= (double) left_right;
     Vector res = Vector(y0, x0).rotate2d(start_angle * -1);
     return start_point + res;
 }
 
 
-
-int Sprial::eval_xy(double R_st, double A, double l, int idd, double* xy)
-{
-    set<int> st1 = { 3,5 }, st2 = { 4,6 };
+int Sprial::eval_xy(double R_st, double A, double l, int idd, double *xy) {
+    set<int> st1 = {3, 5}, st2 = {4, 6};
     double x, y;
-    if (st1.find(idd) != st1.end())
-    {
+    if (st1.find(idd) != st1.end()) {
         x = l -
             pow(l, 3) / (6 * pow(R_st, 2)) -
             pow(l, 4) / (8 * pow(A, 2) * R_st) +
@@ -89,9 +101,7 @@ int Sprial::eval_xy(double R_st, double A, double l, int idd, double* xy)
             pow(l, 11) * (-10 * pow(A, 4) + 3 * pow(R_st, 4)) / (126720 * pow(A, 10) * pow(R_st, 4)) -
             pow(l, 14) / (645120 * pow(A, 12) * R_st) -
             pow(l, 15) / (9676800 * pow(A, 14));
-    }
-    else if (st2.find(idd) != st2.end())
-    {
+    } else if (st2.find(idd) != st2.end()) {
         x = l -
             pow(l, 3) / (6 * pow(R_st, 2)) +
             pow(l, 4) / (8 * pow(A, 2) * R_st) -
@@ -118,13 +128,11 @@ int Sprial::eval_xy(double R_st, double A, double l, int idd, double* xy)
             pow(l, 11) * (10 * pow(A, 4) - 3 * pow(R_st, 4)) / (126720 * pow(A, 10) * pow(R_st, 4)) -
             pow(l, 14) / (645120 * pow(A, 12) * R_st) +
             pow(l, 15) / (9676800 * pow(A, 14));
-    }
-    else {
+    } else {
         throw exception("缓和曲线类型错误.");
     }
 
-    if (xy == NULL)
-    {
+    if (xy == NULL) {
         cerr << "error: null ptr @buf" << endl;
         return NULL;
     }

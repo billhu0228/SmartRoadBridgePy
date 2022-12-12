@@ -129,7 +129,7 @@ PQX::PQX(std::wstring filepath) {
                         aa = stod(xx[1]);
                         st_r = stod(xx[2]);
                         end_r = stod(xx[3]);
-                        lr_dir = LeftRightEnum(stoi(xx[3]));
+                        lr_dir = LeftRightEnum(stoi(xx[4]));
                         item = new Sprial(idd, aa, st_r, end_r, cur_point, cur_angle, lr_dir);
                         // 怀疑构造函数的终点半径输入错误；
                         break;

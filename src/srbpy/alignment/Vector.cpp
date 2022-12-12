@@ -19,15 +19,15 @@ Vector::Vector(double x, double y, double z) {
     _z = z;
 }
 
-double Vector::X(void) {
+double Vector::X() const {
     return _x;
 }
 
-double Vector::Y(void) {
+double Vector::Y(void) const {
     return _y;
 }
 
-double Vector::Z(void) {
+double Vector::Z(void) const {
     return _z;
 }
 
