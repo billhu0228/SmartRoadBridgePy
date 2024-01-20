@@ -1,14 +1,11 @@
 import os
 import platform
-import re
-
 import setuptools
 import subprocess
 import sys
 import shutil
-import sysconfig
 
-from distutils.version import LooseVersion
+# from distutils.version import LooseVersion
 from setuptools.command.build_ext import build_ext
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -30,8 +27,8 @@ class CMakeBuild(build_ext):
                 "CMake must be installed to build the followingextensions: " +
                 ", ".join(e.name for e in self.extensions))
 
-        if platform.system() == "Windows":
-            cmake_version = LooseVersion(re.search(r"version\s*([\d.]+)", out.decode()).group(1))
+        # if platform.system() == "Windows":
+        #     cmake_version = LooseVersion(re.search(r"version\s*([\d.]+)", out.decode()).group(1))
 
         for ext in self.extensions:
             self.build_extension(ext)
@@ -73,7 +70,7 @@ class CMakeBuild(build_ext):
 
 # 016
 setuptools.setup(name="srbpy",
-                 version="0.2.2",
+                 version="0.2.3",
                  description="A Python/C++ Mixed Road Bridge Design Package",
                  url="https://github.com/billhu0228/SmartRoadBridgePy",
                  author="Bill Hu",
@@ -96,6 +93,7 @@ setuptools.setup(name="srbpy",
                      'Programming Language :: Python :: 3.8',
                      'Programming Language :: Python :: 3.9',
                      'Programming Language :: Python :: 3.10',
+                     'Programming Language :: Python :: 3.12',
                      "License :: OSI Approved :: MIT License",
                      "Operating System :: OS Independent",
                  ],

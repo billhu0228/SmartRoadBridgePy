@@ -10,7 +10,7 @@ set(ROOT "../../..")
 # Tell CMake that headers are also in SOURCE_DIR
 include_directories(${SOURCE_DIR})
 
-set(Boost_INCLUDE_DIR E:/boost_1_74_0)
+set(Boost_INCLUDE_DIR C:/boost_1_79_0)
 include_directories(${Boost_INCLUDE_DIR})
 
 set(SOURCES
@@ -26,7 +26,7 @@ set(SOURCES
     )
 
 # Generate Python module
-add_subdirectory(C:/pybind11 pybind11_dir)
+add_subdirectory(C:/pybind11-2.11.1 pybind11_dir)
 pybind11_add_module(align_pqx ${SOURCES})
 
 #find_package(PythonLibs 3 REQUIRED)

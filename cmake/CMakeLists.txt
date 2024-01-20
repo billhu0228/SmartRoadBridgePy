@@ -3,8 +3,9 @@ project(ctest)
 
 set(CMAKE_CXX_STANDARD 11)
 
+
 include_directories(../src/srbpy/alignment)
-set(Boost_INCLUDE_DIR E:/boost_1_74_0)
+set(Boost_INCLUDE_DIR C:/boost_1_79_0)
 include_directories(${Boost_INCLUDE_DIR})
 
 set(AlignCppSrc
