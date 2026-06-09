@@ -173,7 +173,6 @@ Debug/
 /pybind11/
 /backup/alignment/
 /backup/cpp/
-/lib/pybind11/tools/
 /lib/pybind11/tests/
 /lib/pybind11/.github/
 /lib/pybind11/docs/
