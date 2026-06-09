@@ -23,5 +23,7 @@ public:
 
 	Vector get_point_on_curve(double l_from_st) const;
 
+	Angle dir_angle_on_curve(double l_from_st) const;
+
 };
 

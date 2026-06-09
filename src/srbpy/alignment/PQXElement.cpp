@@ -26,7 +26,12 @@ Angle PQXElement::end_angle() const
 
 Vector PQXElement::get_point_on_curve(double l_from_st) const
 {
-	
+
 	return Vector();
+}
+
+Angle PQXElement::dir_angle_on_curve(double l_from_st) const
+{
+	return start_angle;
 }
 

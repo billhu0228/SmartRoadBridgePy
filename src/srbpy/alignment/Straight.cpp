@@ -30,7 +30,13 @@ Vector Straight::get_point_on_curve(double l_from_st) const
 Angle Straight::end_angle() const
 {
 	return Angle(start_angle.GetRadian());
-	
+
+}
+
+Angle Straight::dir_angle_on_curve(double l_from_st) const
+{
+	// 直线方位角恒为起点方位角
+	return start_angle;
 }
 
 

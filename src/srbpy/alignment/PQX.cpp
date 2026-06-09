@@ -50,7 +50,7 @@ PQX::PQX(void) {
     start_point = Vector();
     start_angle = Angle();
     end_pk = 0;
-
+    __rebuild_index();
 }
 
 PQX::PQX(std::wstring filepath) {
@@ -171,7 +171,42 @@ PQX::PQX(std::wstring filepath) {
     }
 
     end_pk = __get_end_pk();
+    __rebuild_index();
+}
 
+void PQX::__rebuild_index() {
+    __len_sum_up.clear();
+    __len_sum_up.push_back(start_pk);
+    for (auto l : elem_collection) {
+        __len_sum_up.push_back(__len_sum_up.back() + l->length());
+    }
+}
+
+// 定位 pk 落在哪个单元，返回单元下标 idx 与该单元内局部弧长 local_l。
+// 调用前应保证 elem_collection 非空、且 start_pk <= pk <= end_pk。
+void PQX::locate(double pk, int &idx, double &local_l) const {
+    int n = (int) elem_collection.size();
+    int aa = 0;
+    for (aa = 0; aa < (int) __len_sum_up.size(); aa++) {
+        if (__len_sum_up[aa] > pk) {
+            break;
+        }
+    }
+    if (aa == (int) __len_sum_up.size()) {
+        aa = aa - 1;
+    }
+    aa = aa - 1;
+    double pre_pk;
+    if (pk >= end_pk) {
+        // 末端归一：固定落在最后一个单元的终点
+        aa = n - 1;
+        pre_pk = __len_sum_up[__len_sum_up.size() - 2];
+    } else {
+        if (aa < 0) aa = 0;
+        pre_pk = __len_sum_up[aa];
+    }
+    idx = aa;
+    local_l = pk - pre_pk;
 }
 
 double PQX::__get_end_pk() const {
@@ -187,62 +222,36 @@ double PQX::__get_end_pk() const {
 }
 
 Vector PQX::get_coordinate(double pk) const {
+    if (elem_collection.empty()) {
+        return start_point;
+    }
     if (pk < start_pk) {
         return get_coordinate(start_pk);
     } else if (pk <= end_pk) {
-        vector<double> tmp;
-        for (auto item :elem_collection) {
-            tmp.push_back(item->length());
-        }
-        vector<double> len_sum_up = {start_pk};
-        for (auto ll : tmp) {
-            len_sum_up.push_back(len_sum_up.back() + ll);
-        }
-        int aa = 0;
-        for (aa = 0; aa < len_sum_up.size(); aa++)// 要注意这里aa和enumerate的区别
-        {
-            double val = len_sum_up[aa];
-            if (val > pk) {
-                break;
-            }
-        }
-        if (aa == len_sum_up.size()) {
-            aa = aa - 1;
-        }
-        aa = aa - 1;
-        double pre_pk;
-        if (pk == end_pk) {
-            pre_pk = len_sum_up[len_sum_up.size() - 2];
-        } else {
-            pre_pk = len_sum_up[aa];
-        }
-        double ll = pk - pre_pk;
-        auto res = (elem_collection[aa])->get_point_on_curve(ll);
-        return res;
+        int idx;
+        double local_l;
+        locate(pk, idx, local_l);
+        return elem_collection[idx]->get_point_on_curve(local_l);
     }
     return Vector();
 }
 
 Vector PQX::get_dir(double pk, double delta) const {
-    double x0, y0, x1, y1, ll;
-    if (pk == end_pk) {
-        x0 = get_coordinate(pk - delta).X();
-        y0 = get_coordinate(pk - delta).Y();
-        x1 = get_coordinate(pk).X();
-        y1 = get_coordinate(pk).Y();
-    } else if (pk == start_pk) {
-        x0 = get_coordinate(pk).X();
-        y0 = get_coordinate(pk).Y();
-        x1 = get_coordinate(pk + delta).X();
-        y1 = get_coordinate(pk + delta).Y();
-    } else {
-        x0 = get_coordinate(pk - delta).X();
-        y0 = get_coordinate(pk - delta).Y();
-        x1 = get_coordinate(pk + delta).X();
-        y1 = get_coordinate(pk + delta).Y();
+    // 解析切线：直接取该点切线方位角，避免对大坐标做数值差分造成的抵消误差。
+    // delta 参数已废弃，仅为保持接口兼容而保留。
+    (void) delta;
+    if (elem_collection.empty()) {
+        return Vector(start_angle.Sin(), start_angle.Cos());
     }
-    ll = sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
-    return Vector((x1 - x0) / ll, (y1 - y0) / ll);
+    double cpk = pk;
+    if (cpk < start_pk) cpk = start_pk;
+    if (cpk > end_pk) cpk = end_pk;
+    int idx;
+    double local_l;
+    locate(cpk, idx, local_l);
+    Angle phi = elem_collection[idx]->dir_angle_on_curve(local_l);
+    // 与 get_point_on_curve 的坐标约定一致：单位切线 = (sin φ, cos φ)
+    return Vector(phi.Sin(), phi.Cos());
 }
 
 double PQX::get_station_by_point(double x0, double y0, int step, double delta) {

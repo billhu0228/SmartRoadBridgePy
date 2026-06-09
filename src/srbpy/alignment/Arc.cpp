@@ -22,6 +22,12 @@ Angle Arc::end_angle() const
 	return start_angle + Angle(__length / __radius) * (int)left_right;
 }
 
+Angle Arc::dir_angle_on_curve(double l_from_st) const
+{
+	// 圆弧方位角随弧长线性变化：phi(l) = start + lr * (l / R)
+	return start_angle + Angle(l_from_st / __radius) * (int)left_right;
+}
+
 Vector Arc::get_point_on_curve(double l_from_st) const
 {
 	double rad = l_from_st / __radius;

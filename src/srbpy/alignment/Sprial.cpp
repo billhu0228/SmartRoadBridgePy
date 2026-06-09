@@ -38,9 +38,21 @@ Angle Sprial::end_angle() const {
     return ang * (double) left_right + start_angle;
 }
 
+Angle Sprial::dir_angle_on_curve(double l_from_st) const {
+    // 缓和曲线方位角 = 曲率沿弧长的积分（曲率线性变化，故为精确二次式）：
+    //   phi(l) = start + lr * ( kappa_st * l + 0.5 * (kappa_en - kappa_st)/L * l^2 )
+    // 半径为无穷(1e39 哨兵)的一端曲率取 0。l=L 时与 end_angle() 完全一致。
+    double kappa_st = (__start_radius >= 1e39) ? 0.0 : 1.0 / __start_radius;
+    double kappa_en = (__end_radius >= 1e39) ? 0.0 : 1.0 / __end_radius;
+    double L = length();
+    double slope = (L != 0.0) ? (kappa_en - kappa_st) / L : 0.0;
+    double dphi = kappa_st * l_from_st + 0.5 * slope * l_from_st * l_from_st;
+    return start_angle + Angle(dphi) * (double) left_right;
+}
+
 Vector Sprial::get_point_on_curve(double l_from_st) const {
     double x0, y0;
-    double *xy = new double[2];
+    double xy[2];
     if ((int) TypeId != 5) {
         eval_xy(__start_radius, __a, l_from_st, (int) TypeId, xy);
     } else {

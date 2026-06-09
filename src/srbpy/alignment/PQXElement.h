@@ -20,6 +20,8 @@ public:
     PQXElement(EITypeID id, Vector& pt, Angle& st_angle, LeftRightEnum lr);
     virtual Angle end_angle() const;
     virtual Vector get_point_on_curve(double l_from_st) const;
+    // 该点切线方位角(解析解，避免数值差分)。基类默认返回起点方位角。
+    virtual Angle dir_angle_on_curve(double l_from_st) const;
     double length() const { return __length; };
     Vector end_point() const { return get_point_on_curve(__length); };
 };
