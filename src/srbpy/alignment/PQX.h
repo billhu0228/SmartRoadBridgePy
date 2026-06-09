@@ -6,7 +6,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <boost\algorithm\string.hpp>
 
 class PQX {
 public:

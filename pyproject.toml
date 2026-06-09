@@ -1,0 +1,13 @@
+[build-system]
+# cmake 作为构建依赖由 pip 自动安装，sdist 在用户机上也能现场编译
+# （仍需用户自备 MSVC 编译器，编译器无法 pip 安装）
+requires = ["setuptools>=42", "wheel", "cmake>=3.16"]
+build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+# 仅构建 CPython 3.8–3.14；本包含 MSVC 专属代码，只发 Windows 轮子
+build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
+build-frontend = "build"
+
+[tool.cibuildwheel.windows]
+archs = ["AMD64"]

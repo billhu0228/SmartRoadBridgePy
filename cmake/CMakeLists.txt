@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.16)
 project(ctest)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+
+# 源码统一 UTF-8，让 MSVC 按 UTF-8 解析（消除 C4819），仅 MSVC 需要
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
 
 
 include_directories(../src/srbpy/alignment)
-set(Boost_INCLUDE_DIR C:/boost_1_79_0)
-include_directories(${Boost_INCLUDE_DIR})
 
 set(AlignCppSrc
         ../src/srbpy/alignment/Angle.cpp

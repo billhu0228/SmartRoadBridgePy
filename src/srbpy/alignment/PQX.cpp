@@ -2,6 +2,8 @@
 #include <codecvt>
 #include <string>
 #include <sstream>
+#include <algorithm>
+#include <cassert>
 #include "PQX.h"
 #include "PQXElement.h"
 #include "Straight.h"
@@ -10,6 +12,28 @@
 #include "base.h"
 
 using namespace std;
+
+// 替代 boost::split(..., is_any_of(","), token_compress_on)：
+// 按分隔符切分宽字符串，合并相邻分隔符并丢弃空 token；
+// token 内字符按 ASCII 窄化（ICD 内容均为数字、逗号、负号、小数点）。
+static vector<string> split_str(const wstring &input, wchar_t delim) {
+    vector<string> result;
+    string token;
+    for (wchar_t wc : input) {
+        if (wc == delim) {
+            if (!token.empty()) {
+                result.push_back(token);
+                token.clear();
+            }
+        } else {
+            token.push_back(static_cast<char>(wc));
+        }
+    }
+    if (!token.empty()) {
+        result.push_back(token);
+    }
+    return result;
+}
 
 //std::wstring ToUtf16(std::string str) {
 //    std::wstring ret;
@@ -65,8 +89,7 @@ PQX::PQX(std::wstring filepath) {
         if (i == 0) {
             start_pk = stod(line);
         } else if (i == 1) {
-            vector<string> xx;
-            boost::split(xx, line, boost::is_any_of(","), boost::token_compress_on);
+            vector<string> xx = split_str(line, L',');
             double start_x = stod(xx[0]);
             double start_y = stod(xx[1]);
             double start_ang_in_rad = stod(xx[2]);
@@ -75,8 +98,7 @@ PQX::PQX(std::wstring filepath) {
             cur_point = start_point;
             cur_angle = start_angle;
         } else {
-            vector<string> xx;
-            boost::split(xx, line, boost::is_any_of(","), boost::token_compress_on);
+            vector<string> xx = split_str(line, L',');
             if (line.substr(0, 2) == L"//") {
                 continue;
             } else if (xx.size() == 3 && stoi(xx[2]) == 0) {

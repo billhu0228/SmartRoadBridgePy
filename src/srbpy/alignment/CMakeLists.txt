@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 project(srbpy)
 
-# Set include directories
+set(CMAKE_CXX_STANDARD 17)
+
+# 源码统一 UTF-8，让 MSVC 按 UTF-8 解析（消除 C4819），仅 MSVC 需要
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
 
 # Set source directory
 set(SOURCE_DIR ".")
@@ -9,9 +14,6 @@ set(ROOT "../../..")
 
 # Tell CMake that headers are also in SOURCE_DIR
 include_directories(${SOURCE_DIR})
-
-set(Boost_INCLUDE_DIR C:/boost_1_79_0)
-include_directories(${Boost_INCLUDE_DIR})
 
 set(SOURCES
     ${SOURCE_DIR}/Angle.cpp
@@ -25,16 +27,7 @@ set(SOURCES
     ${SOURCE_DIR}/binding.cpp
     )
 
-# Generate Python module
-add_subdirectory(C:/pybind11-2.11.1 pybind11_dir)
+# Generate Python module (pybind11 vendored under repo lib/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/pybind11 pybind11_dir)
 pybind11_add_module(align_pqx ${SOURCES})
-
-#find_package(PythonLibs 3 REQUIRED)
-find_package(Python3 COMPONENTS Interpreter Development)
-
-include_directories(
-    ${PYTHON_INCLUDE_DIRS}
-    lib
-    lib/pybind11/include
-)
 

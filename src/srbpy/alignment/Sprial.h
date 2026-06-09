@@ -16,7 +16,7 @@ public:
 	Sprial(EITypeID idd, double a, double sr, double er, Vector& st, Angle& sa, LeftRightEnum direnum);
 
 
-	// Í¨¹ý PQXElement ¼Ì³Ð
+	// é€šè¿‡ PQXElement ç»§æ‰¿
 	//double length() const override;
 
 	Angle end_angle() const override;

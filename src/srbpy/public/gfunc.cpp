@@ -1,23 +1,6 @@
 #include "gfunc.h"
 #include <algorithm>
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/point_xy.hpp>
-#include <boost/geometry/geometries/point.hpp>
-#include <boost/geometry/geometries/multi_point.hpp>
-#include <boost/geometry/geometries/segment.hpp>
-#include <boost/geometry/geometries/polygon.hpp>
-#include <boost/geometry/geometries/multi_polygon.hpp>
-#include <boost/geometry/geometries/linestring.hpp>
-#include <boost/geometry/geometries/multi_linestring.hpp>
-#include <boost/geometry/geometries/box.hpp>
-#include <boost/geometry/geometries/ring.hpp>
-
-// #include <boost/geometry/geometries/variant.hpp>
-
-namespace bg = boost::geometry;
-
-typedef bg::model::d2::point_xy<double> DPoint;
-typedef bg::model::segment<DPoint> DSegment;
+#include <cmath>
 
 std::vector<double>
 intersection_seg_arc(double xc, double yc, double rr, double x0, double y0, double x1, double y1) {
@@ -72,21 +55,33 @@ intersection_seg_arc(double xc, double yc, double rr, double x0, double y0, doub
 //    return res;
 //}
 
+// 求两条线段 (st0->ed0) 与 (st1->ed1) 的交点。
+// 相交返回 [x, y]；不相交返回空 vector（与原 boost::intersection 行为一致）。
+// 注：平行或共线（含共线重叠）一律按“无单一交点”处理，返回空 —— 这与
+// boost 对共线重叠返回重叠段端点的行为不同，但符合本工程的实际用法。
 std::vector<double> intersection_seg_seg(py::list st0, py::list ed0, py::list st1, py::list ed1) {
     std::vector<double> res;
-    DPoint pt00(st0[0].cast<double>(), st0[1].cast<double>());
-    DPoint pt01(ed0[0].cast<double>(), ed0[1].cast<double>());
-    DPoint pt10(st1[0].cast<double>(), st1[1].cast<double>());
-    DPoint pt11(ed1[0].cast<double>(), ed1[1].cast<double>());
-    DSegment sg0(pt00, pt01);
-    DSegment sg1(pt10, pt11);
+    double p0x = st0[0].cast<double>(), p0y = st0[1].cast<double>();
+    double p1x = ed0[0].cast<double>(), p1y = ed0[1].cast<double>();
+    double p2x = st1[0].cast<double>(), p2y = st1[1].cast<double>();
+    double p3x = ed1[0].cast<double>(), p3y = ed1[1].cast<double>();
 
-    std::list<DPoint> lstPoints;
+    double rx = p1x - p0x, ry = p1y - p0y;   // 线段0方向
+    double sx = p3x - p2x, sy = p3y - p2y;   // 线段1方向
+    double denom = rx * sy - ry * sx;        // r × s
 
-    if (bg::intersects(sg0, sg1)) {
-        bg::intersection(sg0, sg1, lstPoints);
-        res.push_back(lstPoints.begin()->x());
-        res.push_back(lstPoints.begin()->y());
+    if (std::fabs(denom) < 1e-12) {
+        // 平行或共线，无单一交点
+        return res;
+    }
+
+    double qpx = p2x - p0x, qpy = p2y - p0y; // (p2 - p0)
+    double t = (qpx * sy - qpy * sx) / denom;
+    double u = (qpx * ry - qpy * rx) / denom;
+
+    if (t >= 0.0 && t <= 1.0 && u >= 0.0 && u <= 1.0) {
+        res.push_back(p0x + t * rx);
+        res.push_back(p0y + t * ry);
     }
     return res;
 }

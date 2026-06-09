@@ -20,18 +20,18 @@ PYBIND11_MODULE(gfunc, m) {
             intersection_seg_arc
     )pbdoc";
     m.def("intersection_seg_arc", &intersection_seg_arc, R"pbdoc(
-        ÇóÏß¶ÎºÍÔ²»¡µÄ½»µã
+        æ±‚çº¿æ®µå’Œåœ†å¼§çš„äº¤ç‚¹
 
         Returns:
-            (float,float) : ½»µã×ø±ê
+            (float,float) : äº¤ç‚¹åæ ‡
 
     )pbdoc");
 
     m.def("intersection_seg_seg", &intersection_seg_seg, R"pbdoc(
-        ÇóÏß¶ÎºÍÏß¶ÎµÄ½»µã
+        æ±‚çº¿æ®µå’Œçº¿æ®µçš„äº¤ç‚¹
 
         Returns:
-            (float,float) : ½»µã×ø±ê
+            (float,float) : äº¤ç‚¹åæ ‡
 
     )pbdoc");
 }

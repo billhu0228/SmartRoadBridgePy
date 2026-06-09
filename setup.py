@@ -38,6 +38,9 @@ class CMakeBuild(build_ext):
         # extdir = ext.cmake_dir
         cmake_args = []
         cmake_args += ["-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + extdir,
+                       # pybind11 v3 defaults to CMake's FindPython (Python_EXECUTABLE);
+                       # keep the legacy var too for backward compatibility.
+                       "-DPython_EXECUTABLE=" + sys.executable,
                        "-DPYTHON_EXECUTABLE=" + sys.executable]
 
         cfg = "Debug" if self.debug else "Release"
@@ -70,7 +73,7 @@ class CMakeBuild(build_ext):
 
 # 016
 setuptools.setup(name="srbpy",
-                 version="0.2.3",
+                 version="0.3.0",
                  description="A Python/C++ Mixed Road Bridge Design Package",
                  url="https://github.com/billhu0228/SmartRoadBridgePy",
                  author="Bill Hu",
@@ -89,13 +92,14 @@ setuptools.setup(name="srbpy",
                  classifiers=[
                      "Development Status :: 3 - Alpha",
                      "Intended Audience :: Developers",
-                     'Programming Language :: Python :: 3.7',
                      'Programming Language :: Python :: 3.8',
                      'Programming Language :: Python :: 3.9',
                      'Programming Language :: Python :: 3.10',
+                     'Programming Language :: Python :: 3.11',
                      'Programming Language :: Python :: 3.12',
+                     'Programming Language :: Python :: 3.13',
                      "License :: OSI Approved :: MIT License",
-                     "Operating System :: OS Independent",
+                     "Operating System :: Microsoft :: Windows",
                  ],
                  keywords="civil road bridge alignment",
                  project_urls={
@@ -111,7 +115,7 @@ setuptools.setup(name="srbpy",
                      'ezdxf>=0.17',
                      'requests>=2.27',
                  ],
-                 python_requires=">=3",
+                 python_requires=">=3.8",
                  # data_files=[],
                  # include_package_data=True,
                  # scripts=[],

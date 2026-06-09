@@ -8,8 +8,6 @@
 #include <pybind11\operators.h>
 #include <pybind11\stl.h>
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "InfiniteRecursion"
 namespace py = pybind11;
 
 PYBIND11_MODULE(align_pqx, m) {
@@ -65,6 +63,3 @@ PYBIND11_MODULE(align_pqx, m) {
             .def_readonly("Text",& PQX::ICDText);
 
 }
-
-
-#pragma clang diagnostic pop

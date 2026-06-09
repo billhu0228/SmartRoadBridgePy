@@ -8,8 +8,13 @@
 #include <iomanip>
 
 int main(int argc, char *argv[]) {
-    PQX fu = PQX(L"D:\\SmartRoadBridgePy\\cmake\\D1.ICD");
-    Vector cc = fu.get_dir(10);
-    std::wcout << std::fixed << std::setprecision(8) << cc[0] << ",";
-    std::wcout << std::fixed << std::setprecision(8) << cc[1] << std::endl;
+    PQX fu = PQX(L"C:\\Users\\bill\\source\\repos\\SmartRoadBridgePy\\docs\\test_data\\M.ICD");
+
+    double pks[] = {2057.474, 2102.474};
+    for (double pk : pks) {
+        Vector c = fu.get_coordinate(pk);
+        std::cout << std::fixed << std::setprecision(6)
+                  << "pk=" << pk << " -> X=" << c.X() << ", Y=" << c.Y() << std::endl;
+    }
+    return 0;
 }
