@@ -25,7 +25,7 @@ jobs:
             exit 1
           fi
 
-  # 2) 在 Windows、Apple Silicon 和 Intel macOS 上构建并测试轮子
+  # 2) 在 Windows 和 Apple Silicon macOS 上构建并测试轮子
   build-wheels:
     needs: check-version
     strategy:
@@ -34,7 +34,6 @@ jobs:
         os:
           - windows-latest
           - macos-15
-          - macos-15-intel
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

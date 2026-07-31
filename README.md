@@ -3,8 +3,8 @@
 
 # SrbPy + *.srb
 
-SrbPy 是一个 Python/C++ 混合的道路与桥梁设计包，支持 Windows AMD64、
-macOS Apple Silicon 和 macOS Intel，要求 Python 3.9 或更高版本。
+SrbPy 是一个 Python/C++ 混合的道路与桥梁设计包，支持 Windows AMD64 和
+macOS Apple Silicon，要求 Python 3.9 或更高版本。
 
 ## 安装
 
