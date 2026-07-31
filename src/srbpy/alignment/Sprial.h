@@ -21,9 +21,8 @@ public:
 
 	Angle end_angle() const override;
 
-	Vector get_point_on_curve(double l_from_st) const;
+	Vector get_point_on_curve(double l_from_st) const override;
 
-	Angle dir_angle_on_curve(double l_from_st) const;
+	Angle dir_angle_on_curve(double l_from_st) const override;
 
 };
-

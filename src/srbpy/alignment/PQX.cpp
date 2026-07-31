@@ -1,32 +1,30 @@
-#include <locale>
-#include <codecvt>
-#include <string>
-#include <sstream>
 #include <algorithm>
 #include <cassert>
+#include <sstream>
+#include <stdexcept>
+#include <string>
 #include "PQX.h"
 #include "PQXElement.h"
 #include "Straight.h"
 #include "Arc.h"
 #include "Sprial.h"
-#include "base.h"
 
 using namespace std;
 
 // 替代 boost::split(..., is_any_of(","), token_compress_on)：
-// 按分隔符切分宽字符串，合并相邻分隔符并丢弃空 token；
-// token 内字符按 ASCII 窄化（ICD 内容均为数字、逗号、负号、小数点）。
-static vector<string> split_str(const wstring &input, wchar_t delim) {
+// 按分隔符切分 UTF-8 字符串，合并相邻分隔符并丢弃空 token。
+// ICD 数值字段和分隔符均为 ASCII，可直接按字节解析。
+static vector<string> split_str(const string &input, char delim) {
     vector<string> result;
     string token;
-    for (wchar_t wc : input) {
-        if (wc == delim) {
+    for (char ch : input) {
+        if (ch == delim) {
             if (!token.empty()) {
                 result.push_back(token);
                 token.clear();
             }
         } else {
-            token.push_back(static_cast<char>(wc));
+            token.push_back(ch);
         }
     }
     if (!token.empty()) {
@@ -34,16 +32,6 @@ static vector<string> split_str(const wstring &input, wchar_t delim) {
     }
     return result;
 }
-
-//std::wstring ToUtf16(std::string str) {
-//    std::wstring ret;
-//    int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), NULL, 0);
-//    if (len > 0) {
-//        ret.resize(len);
-//        MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &ret[0], len);
-//    }
-//    return ret;
-//}
 
 PQX::PQX(void) {
     start_pk = 0;
@@ -53,35 +41,36 @@ PQX::PQX(void) {
     __rebuild_index();
 }
 
-PQX::PQX(std::wstring filepath) {
+PQX::PQX(const std::filesystem::path &filepath) {
     start_pk = 0;
     start_point = Vector();
     start_angle = Angle();
     Vector cur_point = Vector(0, 0);
     Angle cur_angle = Angle(Degree(0));
     string t1;
-    vector<wstring> text;
+    vector<string> text;
 
-
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-
-    fstream fid;
-    fid.open(filepath, std::ofstream::in);
+    ifstream fid(filepath, ios::in | ios::binary);
+    if (!fid.is_open()) {
+        throw runtime_error("无法打开 ICD 文件: " + filepath.generic_u8string());
+    }
 
     while (getline(fid, t1)) {
-        std::wstring wide = converter.from_bytes(t1);
-        text.push_back(wide);
+        if (!t1.empty() && t1.back() == '\r') {
+            t1.pop_back();
+        }
+        text.push_back(t1);
     }
     fid.close();
-    std::wstringstream ss;
+    stringstream ss;
     for (size_t i = 0; i < text.size(); ++i) {
         if (i != 0)
-            ss << L"\n";
+            ss << "\n";
         ss << text[i];
     }
     PQX::ICDText = ss.str();
 
-    wstring line;
+    string line;
 
     for (size_t i = 0; i < text.size(); i++) {
         line = text[i];
@@ -89,7 +78,7 @@ PQX::PQX(std::wstring filepath) {
         if (i == 0) {
             start_pk = stod(line);
         } else if (i == 1) {
-            vector<string> xx = split_str(line, L',');
+            vector<string> xx = split_str(line, ',');
             double start_x = stod(xx[0]);
             double start_y = stod(xx[1]);
             double start_ang_in_rad = stod(xx[2]);
@@ -98,8 +87,8 @@ PQX::PQX(std::wstring filepath) {
             cur_point = start_point;
             cur_angle = start_angle;
         } else {
-            vector<string> xx = split_str(line, L',');
-            if (line.substr(0, 2) == L"//") {
+            vector<string> xx = split_str(line, ',');
+            if (line.rfind("//", 0) == 0) {
                 continue;
             } else if (xx.size() == 3 && stoi(xx[2]) == 0) {
                 break;
@@ -156,8 +145,7 @@ PQX::PQX(std::wstring filepath) {
                         // 怀疑构造函数的终点半径输入错误；
                         break;
                     default:
-                        throw exception("读取ICD文件错误.");
-                        break;
+                        throw runtime_error("读取 ICD 文件错误：未知的路线元素类型。");
                 }
 
                 elem_collection.push_back(item);
@@ -383,5 +371,4 @@ void PQX::__solve_coincidence(const Vector &pt0, const Vector &pt1, double *ret)
         }
     }
 }
-
 

@@ -7,32 +7,42 @@ on:
       - "v*"
 
 jobs:
-  # 1) 校验标签号与 setup.py 中的版本一致，避免发错版本
+  # 1) 校验标签号与 pyproject.toml 中的版本一致，避免发错版本
   check-version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify tag matches setup.py version
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify tag matches pyproject.toml version
         run: |
           TAG="${GITHUB_REF_NAME#v}"
-          VER="$(grep -oP 'version=\"\K[^\"]+' setup.py | head -1)"
-          echo "tag=$TAG  setup.py=$VER"
+          VER="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          echo "tag=$TAG  pyproject.toml=$VER"
           if [ "$TAG" != "$VER" ]; then
-            echo "::error::标签 $GITHUB_REF_NAME 与 setup.py 版本 $VER 不一致"
+            echo "::error::标签 $GITHUB_REF_NAME 与 pyproject.toml 版本 $VER 不一致"
             exit 1
           fi
 
-  # 2) 在 Windows 上用 cibuildwheel 构建各 Python 版本的轮子
+  # 2) 在 Windows、Apple Silicon 和 Intel macOS 上构建并测试轮子
   build-wheels:
     needs: check-version
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - macos-15
+          - macos-15-intel
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Build wheels
         uses: pypa/cibuildwheel@v4.0.0   # 如需更新版本，改这里
       - uses: actions/upload-artifact@v4
         with:
-          name: cibw-wheels
+          name: cibw-wheels-${{ matrix.os }}
           path: ./wheelhouse/*.whl
 
   # 3) 构建源码分发包（sdist）

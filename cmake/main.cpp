@@ -2,13 +2,16 @@
 // Verify analytic get_dir on M.ICD
 //
 #include <iostream>
-#include <vector>
 #include <cmath>
-#include "PQX.h"
+#include <filesystem>
 #include <iomanip>
+#include "PQX.h"
 
 int main(int argc, char *argv[]) {
-    PQX fu = PQX(L"C:\\Users\\bill\\source\\repos\\SmartRoadBridgePy\\docs\\test_data\\M.ICD");
+    const std::filesystem::path filepath = argc > 1
+            ? std::filesystem::path(argv[1])
+            : std::filesystem::path(SRBPY_PROJECT_ROOT) / "docs" / "test_data" / "M.ICD";
+    PQX fu(filepath);
 
     std::cout << std::fixed << std::setprecision(15);
     std::cout << "start_pk=" << fu.start_pk << "  end_pk=" << fu.end_pk << "\n\n";

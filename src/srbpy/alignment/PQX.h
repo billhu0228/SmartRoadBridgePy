@@ -3,6 +3,7 @@
 #include "PQXElement.h"
 #include "Angle.h"
 #include "Vector.h"
+#include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -15,7 +16,7 @@ public:
 
     PQX(void);
 
-    PQX(std::wstring filepath);
+    explicit PQX(const std::filesystem::path &filepath);
 
     Vector get_coordinate(double pk) const;
 
@@ -27,7 +28,7 @@ public:
 
     int get_side(double x0, double y0);
 
-    std::wstring ICDText;
+    std::string ICDText;
 
 private:
     std::vector<PQXElement *> elem_collection;
@@ -51,4 +52,3 @@ public:
     void __binary_test__(double, double, const Vector &, double, double ret[2]);
 
 };
-

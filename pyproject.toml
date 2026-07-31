@@ -1,14 +1,76 @@
 [build-system]
-# cmake 作为构建依赖由 pip 自动安装，sdist 在用户机上也能现场编译
-# （仍需用户自备 MSVC 编译器，编译器无法 pip 安装）
-requires = ["setuptools>=42", "wheel", "cmake>=3.16"]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core>=1.0"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "srbpy"
+version = "0.3.2"
+description = "A Python/C++ mixed road bridge design package"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Bill Hu", email = "billhu0228@icloud.com" },
+]
+keywords = ["civil", "road", "bridge", "alignment"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "numpy",
+    "scikit-spatial>=4.0.0",
+    "PyAngle>=2.2.0",
+    "SQLAlchemy>=1.3",
+    "ezdxf>=0.17",
+    "packaging>=20",
+    "requests>=2.27",
+]
+
+[project.urls]
+Documentation = "https://smartroadbridgepy.readthedocs.io/"
+Source = "https://github.com/billhu0228/SmartRoadBridgePy"
+
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+cmake.version = ">=3.16"
+ninja.version = ">=1.11"
+wheel.packages = ["src/srbpy"]
+wheel.exclude = ["**/*.cpp", "**/*.h", "**/CMakeLists.txt"]
+sdist.include = [
+    "CMakeLists.txt",
+    "lib/pybind11/**",
+    "src/srbpy/**",
+    "tests/**",
+]
+sdist.exclude = [
+    "lib/pybind11/.github/**",
+    "lib/pybind11/docs/**",
+    "lib/pybind11/tests/**",
+]
 
 [tool.cibuildwheel]
-# 仅构建 CPython 3.9–3.14（cibuildwheel 4.x 已不支持 3.8）；
-# 本包含 MSVC 专属代码，只发 Windows 轮子
 build = "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
 build-frontend = "build"
+test-requires = ["pytest"]
+test-command = "pytest {project}/tests"
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64"]
+
+[tool.cibuildwheel.macos]
+archs = ["native"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

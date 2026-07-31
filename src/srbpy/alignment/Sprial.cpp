@@ -1,5 +1,6 @@
 #include "Sprial.h"
 #include <set>
+#include <stdexcept>
 
 using namespace std;
 
@@ -141,12 +142,12 @@ int Sprial::eval_xy(double R_st, double A, double l, int idd, double *xy) {
             pow(l, 14) / (645120 * pow(A, 12) * R_st) +
             pow(l, 15) / (9676800 * pow(A, 14));
     } else {
-        throw exception("缓和曲线类型错误.");
+        throw runtime_error("缓和曲线类型错误。");
     }
 
-    if (xy == NULL) {
+    if (xy == nullptr) {
         cerr << "error: null ptr @buf" << endl;
-        return NULL;
+        return -1;
     }
     xy[0] = x;
     xy[1] = y;

@@ -1,5 +1,8 @@
 #include "Vector.h"
 
+#include <stdexcept>
+#include <string>
+
 
 Vector::Vector() {
     _x = 0;
@@ -58,7 +61,7 @@ double Vector::distance_point(const Vector &other) const {
 /// \return
 double Vector::angle_signed(const Vector &other) const {
     if (_z != 0 || other._z != 0) {
-        throw std::exception("读取ICD文件错误.");
+        throw std::runtime_error("带符号夹角只支持二维向量。");
     }
     double dot = _x * other._x + _y * other._y;
     double det = _x * other._y - _y * other._x;
@@ -71,6 +74,6 @@ double &Vector::operator[](int i) {
     if (i == 0) { return _x; }
     else if (i == 1) { return _y; }
     else if (i == 2) { return _z; }
-    else { throw std::exception("%d 超过索引长度.", i); }
+    else { throw std::out_of_range("Vector 索引越界: " + std::to_string(i)); }
 
 }

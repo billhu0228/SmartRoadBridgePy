@@ -4,9 +4,10 @@
 #include "Angle.h"
 #include "Vector.h"
 #include "PQX.h"
-#include <pybind11\pybind11.h>
-#include <pybind11\operators.h>
-#include <pybind11\stl.h>
+#include <pybind11/operators.h>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#include <pybind11/stl/filesystem.h>
 
 namespace py = pybind11;
 
@@ -49,7 +50,7 @@ PYBIND11_MODULE(align_pqx, m) {
 
     py::class_<PQX>(m, "PQX")
             .def(py::init<>())
-            .def(py::init<std::wstring>())
+            .def(py::init<const std::filesystem::path &>())
             .def_readwrite("start_pk", &PQX::start_pk)
             .def_readwrite("end_pk", &PQX::end_pk)
             .def_readwrite("start_angle", &PQX::start_angle)
